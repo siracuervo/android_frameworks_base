@@ -167,9 +167,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         if (mDialog != null && mUiContext == null) {
             mDialog.dismiss();
             mDialog = null;
+            mDialog = createDialog();
             // Show delayed, so that the dismiss of the previous dialog completes
             mHandler.sendEmptyMessage(MESSAGE_SHOW);
         } else {
+            mDialog = createDialog();
             handleShow();
         }
     }
@@ -197,7 +199,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         awakenIfNecessary();
-        mDialog = createDialog();
         prepareDialog();
 
         final IStatusBarService barService = IStatusBarService.Stub.asInterface(
