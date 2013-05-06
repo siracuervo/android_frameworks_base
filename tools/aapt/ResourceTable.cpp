@@ -14,6 +14,7 @@
 #include <androidfw/ResourceTypes.h>
 #include <utils/ByteOrder.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 #define NOISY(x) //x
 
@@ -822,6 +823,7 @@ status_t compileResourceFile(Bundle* bundle,
     const String16 myPackage(assets->getPackage());
 
     bool hasErrors = false;
+    bool errorOnWarning = getenv("AAPT_ERROR_ON_WARNING") != NULL ? true : false;
 
     bool fileIsTranslatable = true;
     if (strstr(in->getPrintableSource().string(), "donottranslate") != NULL) {
@@ -1318,11 +1320,13 @@ status_t compileResourceFile(Bundle* bundle,
                         curIsFormatted = false;
                         // Untranslatable strings must only exist in the default [empty] locale
                         if (locale.size() > 0) {
-                            fprintf(stderr, "aapt: error: string '%s' in %s marked untranslatable but exists"
+                            fprintf(stderr, "aapt: warning: string '%s' in %s marked untranslatable but exists"
                                     " in locale '%s'\n", String8(name).string(),
                                     bundle->getResourceSourceDirs()[0],
                                     locale.string());
-                            hasErrors = localHasErrors = true;
+                            if (errorOnWarning) {
+                                hasErrors = localHasErrors = true;
+                            }
                         } else {
                             // Intentionally empty block:
                             //
@@ -1417,6 +1421,16 @@ status_t compileResourceFile(Bundle* bundle,
                         const uint16_t* value = block.getAttributeStringValue(i, &length);
                         if (strcmp16(value, false16.string()) == 0) {
                             curIsFormatted = false;
+                            // Untranslatable strings must only exist in the default [empty] locale
+                            if (locale.size() > 0) {
+                                fprintf(stderr, "aapt: warning: string-array '%s' in %s marked untranslatable but exists"
+                                        " in locale '%s'\n", String8(name).string(),
+                                        bundle->getResourceSourceDirs()[0],
+                                        locale.string());
+                                if (errorOnWarning) {
+                                    hasErrors = localHasErrors = true;
+                                }
+                            }
                             break;
                         }
                     }
@@ -2573,9 +2587,9 @@ ResourceTable::addLocalization(const String16& name, const String8& locale)
  * Flag various sorts of localization problems.  '+' indicates checks already implemented;
  * '-' indicates checks that will be implemented in the future.
  *
- * + A localized string for which no default-locale version exists => error
+ * + A localized string for which no default-locale version exists => warning or error
  * + A string for which no version in an explicitly-requested locale exists => warning
- * + A localized translation of an translateable="false" string => error
+ * + A localized translation of an translateable="false" string => warning or error
  * - A localized string not provided in every locale used by the table
  */
 status_t
@@ -2583,6 +2597,7 @@ ResourceTable::validateLocalizations(void)
 {
     status_t err = NO_ERROR;
     const String8 defaultLocale;
+    bool errorOnWarning = getenv("AAPT_ERROR_ON_WARNING") != NULL ? true : false;
 
     // For all strings...
     for (map<String16, set<String8> >::iterator nameIter = mLocalizations.begin();
@@ -2592,7 +2607,7 @@ ResourceTable::validateLocalizations(void)
 
         // Look for strings with no default localization
         if (configSet.count(defaultLocale) == 0) {
-            fprintf(stderr, "aapt: error: string '%s' has no default translation in %s; found:",
+            fprintf(stderr, "aapt: warning: string '%s' has no default translation in %s; found:",
                     String8(nameIter->first).string(), mBundle->getResourceSourceDirs()[0]);
             for (set<String8>::const_iterator locales = configSet.begin();
                  locales != configSet.end();
@@ -2600,7 +2615,9 @@ ResourceTable::validateLocalizations(void)
                 fprintf(stderr, " %s", (*locales).string());
             }
             fprintf(stderr, "\n");
-            err = BAD_VALUE;
+            if (errorOnWarning) {
+                err = BAD_VALUE;
+            }
         }
 
         // Check that all requested localizations are present for this string
