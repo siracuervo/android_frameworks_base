@@ -3501,7 +3501,25 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_REDISPLAY = "active_display_redisplay";
 
         /**
-         * Brightness of the display when displaying the active display view
+         * Whether to wake the screen with the camera key half-press.
+         * @hide
+         */
+        public static final String CAMERA_WAKE_SCREEN = "camera_wake_screen";
+
+        /**
+         * Whether or not to send device back to sleep if Camera button is released ("Peek")
+         * @hide
+         */
+        public static final String CAMERA_SLEEP_ON_RELEASE = "camera_sleep_on_release";
+
+        /**
+         * Whether or not camera button music controls should be enabled to play/pause media tracks
+         * @hide
+         */
+        public static final String CAMERA_MUSIC_CONTROLS = "camera_music_controls";
+
+        /**
+         * Whether or not to launch default music player when headset is connected
          * @hide
          */
         public static final String ACTIVE_DISPLAY_BRIGHTNESS = "active_display_brightness";
@@ -3803,6 +3821,12 @@ public final class Settings {
          * @hide
          */
         public static final String KEY_APP_SWITCH_LONG_PRESS_ACTION = "key_app_switch_long_press_action";
+
+        /**
+         * Whether to unlock the screen with the camera key.  The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String CAMERA_UNLOCK_SCREEN = "camera_unlock_screen";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
