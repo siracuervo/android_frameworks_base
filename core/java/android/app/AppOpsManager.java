@@ -781,13 +781,18 @@ public class AppOpsManager {
         private final long mTime;
         private final long mRejectTime;
         private final int mDuration;
+        private final int mAllowedCount;
+        private final int mIgnoredCount;
 
-        public OpEntry(int op, int mode, long time, long rejectTime, int duration) {
+        public OpEntry(int op, int mode, long time, long rejectTime, int duration,
+                int allowedCount, int ignoredCount) {
             mOp = op;
             mMode = mode;
             mTime = time;
             mRejectTime = rejectTime;
             mDuration = duration;
+            mAllowedCount = allowedCount;
+            mIgnoredCount = ignoredCount;
         }
 
         public int getOp() {
@@ -814,6 +819,14 @@ public class AppOpsManager {
             return mDuration == -1 ? (int)(System.currentTimeMillis()-mTime) : mDuration;
         }
 
+        public int getAllowedCount() {
+            return mAllowedCount;
+        }
+
+        public int getIgnoredCount() {
+            return mIgnoredCount;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -826,6 +839,8 @@ public class AppOpsManager {
             dest.writeLong(mTime);
             dest.writeLong(mRejectTime);
             dest.writeInt(mDuration);
+            dest.writeInt(mAllowedCount);
+            dest.writeInt(mIgnoredCount);
         }
 
         OpEntry(Parcel source) {
@@ -834,6 +849,8 @@ public class AppOpsManager {
             mTime = source.readLong();
             mRejectTime = source.readLong();
             mDuration = source.readInt();
+            mAllowedCount = source.readInt();
+            mIgnoredCount = source.readInt();
         }
 
         public static final Creator<OpEntry> CREATOR = new Creator<OpEntry>() {
@@ -1308,5 +1325,12 @@ public class AppOpsManager {
                 return com.android.internal.R.drawable.stat_notify_privacy_guard_custom_plus;
         }
         return com.android.internal.R.drawable.stat_notify_privacy_guard_off;
+    }
+
+    public void resetCounters() {
+        try {
+            mService.resetCounters();
+        } catch (RemoteException e) {
+        }
     }
 }
