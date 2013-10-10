@@ -30,8 +30,8 @@ import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.activedisplay.ActiveDisplayView;
-import android.annotation.ChaosLab;
-import android.annotation.ChaosLab.Classification;
+import android.annotation.liquidLab;
+import android.annotation.liquidLab.Classification;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -101,7 +101,7 @@ import com.android.internal.statusbar.StatusBarIcon;
 import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.internal.util.liquid.DeviceUtils;
-import com.android.systemui.chaos.lab.gestureanywhere.GestureAnywhereView;
+import com.android.systemui.liquid.lab.gestureanywhere.GestureAnywhereView;
 import com.android.systemui.R;
 import com.android.systemui.SearchPanelView;
 import com.android.systemui.RecentsComponent;
@@ -250,7 +250,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     protected ActiveDisplayView mActiveDisplayView;
 
-    @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
+    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
     protected GestureAnywhereView mGestureAnywhereView;
 
     public IStatusBarService getStatusBarService() {
@@ -1740,7 +1740,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         return lp;
     }
 
-    @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
+    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
     protected void addGestureAnywhereView() {
         mGestureAnywhereView = (GestureAnywhereView)View.inflate(
                 mContext, R.layout.gesture_anywhere_overlay, null);
@@ -1748,13 +1748,13 @@ public abstract class BaseStatusBar extends SystemUI implements
         mGestureAnywhereView.setStatusBar(this);
     }
 
-    @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
+    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
     protected void removeGestureAnywhereView() {
         if (mGestureAnywhereView != null)
             mWindowManager.removeView(mGestureAnywhereView);
     }
 
-    @ChaosLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
+    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
     protected WindowManager.LayoutParams getGestureAnywhereViewLayoutParams(int gravity) {
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.WRAP_CONTENT,
