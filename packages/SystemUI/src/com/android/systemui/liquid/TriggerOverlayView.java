@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.systemui.ose;
+package com.android.systemui.liquid;
 
 import android.app.KeyguardManager;
 import android.content.Context;
