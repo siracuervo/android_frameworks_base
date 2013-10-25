@@ -3942,8 +3942,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
         mCarrierAndWifiViewHeight = res.getDimensionPixelSize(R.dimen.carrier_label_height);
-        mNotificationHeaderHeight =
-            res.getDimensionPixelSize(R.dimen.notification_panel_header_height);
+        mNotificationHeaderHeight = res.getDimensionPixelSize(
+                R.dimen.notification_panel_header_height);
         mPeekHeight = res.getDimensionPixelSize(R.dimen.peek_height);
 
         mNotificationPanelMinHeightFrac = res.getFraction(R.dimen.notification_panel_min_height_frac, 1, 1);
