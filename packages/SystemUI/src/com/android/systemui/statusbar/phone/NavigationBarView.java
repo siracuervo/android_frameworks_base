@@ -60,8 +60,9 @@ import android.widget.LinearLayout;
 import com.android.internal.util.liquid.ButtonConfig;
 import com.android.internal.util.liquid.ButtonsConstants;
 import com.android.internal.util.liquid.ButtonsHelper;
-import com.android.internal.util.liquid.ColorHelper;
+import com.android.internal.util.liquid.ImageHelper;
 import com.android.internal.util.liquid.DeviceUtils;
+
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
 import com.android.systemui.statusbar.DelegateViewHelper;
@@ -434,7 +435,7 @@ public class NavigationBarView extends LinearLayout {
         mBackAltIcon = res.getDrawable(R.drawable.ic_sysbar_back_ime);
         if (mNavBarButtonColorMode != 3) {
             mBackAltIcon = new BitmapDrawable(mContext.getResources(),
-                ColorHelper.getColoredBitmap(mBackAltIcon, mNavBarButtonColor));
+                ImageHelper.getColoredBitmap(mBackAltIcon, mNavBarButtonColor));
         }
 
         // now the keyguard searchlight and camera button
@@ -447,7 +448,7 @@ public class NavigationBarView extends LinearLayout {
         if (searchLight != null && defaultSearchLightDrawable != null) {
             if (mNavBarButtonColorMode != 3) {
                 searchLight.setImageBitmap(
-                    ColorHelper.getColoredBitmap(defaultSearchLightDrawable, mNavBarButtonColor));
+                    ImageHelper.getColoredBitmap(defaultSearchLightDrawable, mNavBarButtonColor));
             } else {
                 searchLight.setImageDrawable(defaultSearchLightDrawable);
             }
@@ -455,7 +456,7 @@ public class NavigationBarView extends LinearLayout {
         if (cameraButton != null && defaultCameraButtonDrawable != null) {
             if (mNavBarButtonColorMode != 3) {
                 cameraButton.setImageBitmap(
-                    ColorHelper.getColoredBitmap(defaultCameraButtonDrawable, mNavBarButtonColor));
+                    ImageHelper.getColoredBitmap(defaultCameraButtonDrawable, mNavBarButtonColor));
             } else {
                 cameraButton.setImageDrawable(defaultCameraButtonDrawable);
             }
@@ -510,7 +511,7 @@ public class NavigationBarView extends LinearLayout {
         Drawable d = ButtonsHelper.getButtonIconImage(mContext, clickAction, iconUri);
         if (d != null) {
             if (colorize && mNavBarButtonColorMode != 3) {
-                v.setImageBitmap(ColorHelper.getColoredBitmap(d, mNavBarButtonColor));
+                v.setImageBitmap(ImageHelper.getColoredBitmap(d, mNavBarButtonColor));
             } else {
                 v.setImageDrawable(d);
             }
@@ -561,7 +562,7 @@ public class NavigationBarView extends LinearLayout {
 
         Drawable d = mContext.getResources().getDrawable(R.drawable.ic_sysbar_menu);
         if (mNavBarButtonColorMode != 3) {
-            v.setImageBitmap(ColorHelper.getColoredBitmap(d, mNavBarButtonColor));
+            v.setImageBitmap(ImageHelper.getColoredBitmap(d, mNavBarButtonColor));
         } else {
             v.setImageDrawable(d);
         }
