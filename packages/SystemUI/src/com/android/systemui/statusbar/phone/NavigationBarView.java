@@ -206,8 +206,8 @@ public class NavigationBarView extends LinearLayout {
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    mDelegateHelper.setDisabled(false);
-                    mBarTransitions.setContentVisible(true);
+                    mDelegateHelper.setDisabled(!hasNavringTargets());
+                    transitionCameraAndSearchButtonAlpha(1.0f);
                     break;
             }
             return KeyguardTouchDelegate.getInstance(getContext()).dispatch(event);
