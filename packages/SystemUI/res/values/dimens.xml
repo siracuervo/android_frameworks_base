@@ -222,6 +222,7 @@
     <!-- used by DessertCase -->
     <dimen name="dessert_case_cell_size">192dp</dimen>
 
+<<<<<<< HEAD
     <!-- Quick Settings tile geometry: gap between icon and text 4 per row-->
     <dimen name="qs_4_column_text_padding">14dp</dimen>
     <!-- Quick Settings tile geometry: gap between icon and text 5 per row-->
@@ -234,4 +235,17 @@
     <!-- Quick Settings tile geometry: text size for 5 tile per row-->
     <dimen name="qs_5_column_text_size">9sp</dimen>
 
+=======
+    <dimen name="halo_bubble_size">75dp</dimen>
+    <dimen name="halo_number_size">24dp</dimen>
+    <dimen name="halo_number_icon_size">18dp</dimen>
+    <dimen name="halo_number_text_size">14sp</dimen>
+    <dimen name="halo_speech_text_size">16sp</dimen>
+    <dimen name="halo_status_text_size">16sp</dimen>
+    <dimen name="halo_speech_hpadding_short">4dp</dimen>
+    <dimen name="halo_speech_hpadding_wide">13dp</dimen>
+    <dimen name="halo_speech_vpadding_top">3dp</dimen>
+    <dimen name="halo_speech_vpadding_bottom">3dp</dimen>
+    <dimen name="halo_content_max_width">250dp</dimen>
+>>>>>>> aa7d9907... [2/2] Frameworks: HALO
 </resources>

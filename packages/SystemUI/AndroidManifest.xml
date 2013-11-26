@@ -78,6 +78,7 @@
     <!-- Wifi Display -->
     <uses-permission android:name="android.permission.CONFIGURE_WIFI_DISPLAY" />
 
+<<<<<<< HEAD
     <!-- Kill app permission -->
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
@@ -97,6 +98,10 @@
     <!-- Development shortcut -->
     <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+=======
+    <!--Halo-->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+>>>>>>> aa7d9907... [2/2] Frameworks: HALO
 
     <application
         android:persistent="true"
@@ -435,6 +440,7 @@
             </intent-filter>
         </activity>
 
+<<<<<<< HEAD
         <!-- Active display -->
         <activity android:name=".statusbar.policy.activedisplay.DummyActivity"
                   android:label=""
@@ -444,5 +450,7 @@
                   android:theme="@style/Theme.DummyActivity">
         </activity>
 
+=======
+>>>>>>> aa7d9907... [2/2] Frameworks: HALO
     </application>
 </manifest>
