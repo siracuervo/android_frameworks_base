@@ -23,12 +23,18 @@ import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
 import android.app.TaskStackBuilder;
+import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.IPackageDataObserver;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -70,6 +76,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
@@ -1094,6 +1101,33 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             item.setTitle(R.string.status_bar_recent_unlock_item_title);
         }
 
+        final ContentResolver cr = mContext.getContentResolver();
+        if (Settings.Secure.getInt(cr,
+            Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 0) {
+            popup.getMenu().findItem(R.id.recent_force_stop).setVisible(false);
+            popup.getMenu().findItem(R.id.recent_wipe_app).setVisible(false);
+        } else {
+            if (viewHolder != null) {
+                final TaskDescription ad = viewHolder.taskDescription;
+                try {
+                    PackageManager pm = (PackageManager) mContext.getPackageManager();
+                    ApplicationInfo mAppInfo = pm.getApplicationInfo(ad.packageName, 0);
+                    DevicePolicyManager mDpm = (DevicePolicyManager) mContext.
+                            getSystemService(Context.DEVICE_POLICY_SERVICE);
+                    if ((mAppInfo.flags&(ApplicationInfo.FLAG_SYSTEM
+                          | ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA))
+                          == ApplicationInfo.FLAG_SYSTEM
+                          || mDpm.packageHasActiveAdmins(ad.packageName)) {
+                        popup.getMenu()
+                        .findItem(R.id.notification_inspect_item_wipe_app).setEnabled(false);
+                    } else {
+                        Log.d(TAG, "Not a 'special' application");
+                    }
+                } catch (NameNotFoundException ex) {
+                    Log.e(TAG, "Failed looking up ApplicationInfo for " + ad.packageName, ex);
+                }
+            }
+        }
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
@@ -1109,7 +1143,17 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
-              
+                } else if (item.getItemId() == R.id.recent_force_stop) {
+                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+                    if (viewHolder != null) {
+                        final TaskDescription ad = viewHolder.taskDescription;
+                        ActivityManager am = (ActivityManager)mContext.getSystemService(
+                                Context.ACTIVITY_SERVICE);
+                        am.forceStopPackage(ad.packageName);
+                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
+                    } else {
+                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
+                    }
                 } else if (item.getItemId() == R.id.recent_lock_item) {
                     if (viewHolder != null) {
                         if (viewHolder.taskDescription.isLocked()) {
@@ -1175,6 +1219,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
 
         return super.fitSystemWindows(insets);
+    }
+
+    class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
+        public void onRemoveCompleted(final String packageName, final boolean succeeded) {
+        }
     }
 
     private void updateRamBar() {
