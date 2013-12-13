@@ -48,6 +48,9 @@ public class QuietHoursTile extends QuickSettingsTile {
                         Settings.System.QUIET_HOURS_ENABLED,
                         mEnabled ? 0 : 1, UserHandle.USER_CURRENT);
                 autoSmsIntentBroadcast(mContext);
+                if (isFlipTilesEnabled()) {
+                    flipTile(0);
+                }
             }
         };
         mOnLongClick = new View.OnLongClickListener() {
@@ -98,5 +101,4 @@ public class QuietHoursTile extends QuickSettingsTile {
     public void onChangeUri(ContentResolver resolver, Uri uri) {
         updateResources();
     }
-
 }
