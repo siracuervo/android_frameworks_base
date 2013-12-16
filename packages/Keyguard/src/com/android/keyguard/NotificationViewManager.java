@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 Team AOSPAL
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.keyguard;
 
 import android.app.INotificationManager;
@@ -31,7 +47,6 @@ public class NotificationViewManager {
     private static Sensor ProximitySensor = null;
 
     private boolean mWokenByPocketMode = false;
-    private boolean mIsScreenOn = false;
     private long mTimeCovered = 0;
 
     private Context mContext;
@@ -51,8 +66,6 @@ public class NotificationViewManager {
         public boolean dismissAll = true;
         public boolean expandedView = true;
         public boolean forceExpandedView = false;
-        public boolean wakeOnNotification = false;
-        public int notificationsHeight = 4;
 
         public Configuration(Handler handler) {
             super(handler);
@@ -75,10 +88,6 @@ public class NotificationViewManager {
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW), false, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HEIGHT), false, this);
         }
 
         @Override
@@ -101,20 +110,21 @@ public class NotificationViewManager {
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_EXPANDED_VIEW, expandedView ? 1 : 0) == 1;
             forceExpandedView = Settings.System.getInt(mContext.getContentResolver(),
                     Settings.System.LOCKSCREEN_NOTIFICATIONS_FORCE_EXPANDED_VIEW, forceExpandedView ? 1 : 0) == 1;
-            wakeOnNotification = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION, forceExpandedView ? 1 : 0) == 1;
-            notificationsHeight = Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_HEIGHT, notificationsHeight);
+
+            if (pocketMode) {
+                registerProximityListener();
+            } else {
+                unregisterProximityListener();
+            }
         }
     }
 
     private class ProximityListener implements SensorEventListener {
         public void onSensorChanged(SensorEvent event) {
             if (event.sensor.equals(ProximitySensor)) {
-                if (!mIsScreenOn) {
+                if (!mPowerManager.isScreenOn()) {
                     if (event.values[0] >= ProximitySensor.getMaximumRange()) {
-                        if (config.pocketMode && mTimeCovered != 0 && (config.showAlways || mHostView.getNotificationCount() > 0) &&
-                                System.currentTimeMillis() - mTimeCovered > MIN_TIME_COVERED) {
+                        if (mTimeCovered != 0 && (config.showAlways || mHostView.getNotificationCount() > 0) && System.currentTimeMillis() - mTimeCovered > MIN_TIME_COVERED) {
                             wakeDevice();
                             mWokenByPocketMode = true;
                             mHostView.showAllNotifications();
@@ -123,8 +133,7 @@ public class NotificationViewManager {
                     } else if (mTimeCovered == 0) {
                         mTimeCovered = System.currentTimeMillis();
                     }
-                } else if (config.pocketMode && mWokenByPocketMode &&
-                        mKeyguardViewManager.isShowing() && event.values[0] < 0.2f){
+                } else if (mWokenByPocketMode && mKeyguardViewManager.isShowing() && event.values[0] < 0.2f){
                     mPowerManager.goToSleep(SystemClock.uptimeMillis());
                     mTimeCovered = System.currentTimeMillis();
                     mWokenByPocketMode = false;
@@ -137,9 +146,9 @@ public class NotificationViewManager {
     public class NotificationListenerWrapper extends INotificationListener.Stub {
         @Override
         public void onNotificationPosted(final StatusBarNotification sbn) {
-            boolean screenOffAndNotCovered = !mIsScreenOn && mTimeCovered == 0;
-            if (mHostView.addNotification(sbn, screenOffAndNotCovered || mIsScreenOn,
-                        config.forceExpandedView) && config.wakeOnNotification && screenOffAndNotCovered) {
+            boolean screenOffAndNotCovered = !mPowerManager.isScreenOn() && mTimeCovered == 0;
+            if (mHostView.addNotification(sbn, screenOffAndNotCovered || mPowerManager.isScreenOn(),
+                        config.forceExpandedView) && screenOffAndNotCovered) {
                 wakeDevice();
             }
         }
@@ -173,7 +182,7 @@ public class NotificationViewManager {
     }
 
     private void registerProximityListener() {
-        if (ProximityListener == null && (config.pocketMode || config.wakeOnNotification)) {
+        if (ProximityListener == null) {
             SensorManager sensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
             ProximityListener = new ProximityListener();
             ProximitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -221,19 +230,9 @@ public class NotificationViewManager {
     }
 
     public void onScreenTurnedOff() {
-        mIsScreenOn = false;
         mWokenByPocketMode = false;
-        if (mHostView != null) mHostView.hideAllNotifications();
-        if (NotificationListener == null) {
-            registerListeners();
-            mHostView.addNotifications();
-        }
-    }
-
-    public void onScreenTurnedOn() {
-        mIsScreenOn = true;
-        mTimeCovered = 0;
-        if (mHostView != null) mHostView.bringToFront();
+        mHostView.hideAllNotifications();
+        registerListeners();
     }
 
     public void onDismiss() {
