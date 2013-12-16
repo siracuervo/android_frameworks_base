@@ -76,6 +76,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.liquid.ButtonConfig;
 import com.android.internal.util.liquid.ImageHelper;
 import com.android.internal.util.liquid.PolicyConstants;
@@ -198,6 +199,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         awakenIfNecessary();
         mDialog = createDialog();
         prepareDialog();
+
+        final IStatusBarService barService = IStatusBarService.Stub.asInterface(
+                ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+        try {
+            barService.collapsePanels();
+        } catch (RemoteException ex) {
+            // bad bad
+        }
 
         WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
         attrs.setTitle("GlobalActions");
