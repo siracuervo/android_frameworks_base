@@ -800,9 +800,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
             if (!info.isSystem) {
                 Slog.v(TAG, "disabling notification listener for user " + oldUser + ": " + component);
-                // Do not un-register HALO, we un-register only when HALO is closed
-                if (!component.getPackageName().equals("HaloComponent"))
-                    unregisterListenerService(component, info.userid);
+                unregisterListenerService(component, info.userid);
             }
         }
 
@@ -827,11 +825,9 @@ public class NotificationManagerService extends INotificationManager.Stub
 
         final int permission = mContext.checkCallingPermission(
             android.Manifest.permission.SYSTEM_NOTIFICATION_LISTENER);
-
-        if (permission == PackageManager.PERMISSION_DENIED) {
-            if (!component.getPackageName().equals("HaloComponent"))
-               checkCallerIsSystem();
-        }
+			
+        if (permission == PackageManager.PERMISSION_DENIED)
+            checkCallerIsSystem();
 
         synchronized (mNotificationList) {
             try {
