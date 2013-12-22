@@ -218,7 +218,7 @@ public class KeyguardViewManager {
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
                     | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
 
-            if (!mSeeThrough) {
+            if (!isSeeThroughEnabled()) {
                 flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
             }
 
@@ -720,18 +720,21 @@ public class KeyguardViewManager {
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
-    void updateShowWallpaper(boolean show) {
-        if (mSeeThrough) {
-            return;
-        } else {
-            if (show) {
-                mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            } else {
-                mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            }
+    private boolean isSeeThroughEnabled() {
+        return Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
+    }
 
-            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+    void updateShowWallpaper(boolean show) {
+        if (isSeeThroughEnabled()) show = false;
+
+        if (show) {
+            mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+        } else {
+            mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
         }
+
+        mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
     public void setNeedsInput(boolean needsInput) {
