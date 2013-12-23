@@ -149,6 +149,7 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
                                 setTimer(BluetoothLwPwrProximityMonitor.this.new DisconnectTimeOutTask(), mTimeOutValue);
                             }
                         } else {
+                            mState = MONITOR_STATE_IDLE;
                             stop = true;
                         }
                     }
