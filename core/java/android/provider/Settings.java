@@ -2812,6 +2812,43 @@ public final class Settings {
         public static final String FORMAL_TEXT_INPUT = "formal_text_input";
 
         /**
+         * Display style of the status bar battery information
+         * default: 0
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY = "status_bar_battery";
+
+        /**
+         * Circle battery icon color
+         * in statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_COLOR = "status_bar_battery_color";
+
+        /**
+         * Battery icon text color
+         * in statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_TEXT_COLOR = "status_bar_battery_text_color";
+
+        /**
+         * Battery icon text charging color
+         * in statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR =
+                "status_bar_battery_text_charging_color";
+
+        /**
+         * Circle battery animation speed during charge
+         * in statusbar
+         * @hide
+         */
+        public static final String STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED =
+                "status_bar_circle_battery_animationspeed";
+
+        /**
          * Whether to control brightness from status bar
          * @hide
          */
@@ -2864,18 +2901,16 @@ public final class Settings {
          */
         public static final String POWER_UI_LOW_BATTERY_WARNING_POLICY = "power_ui_low_battery_warning_policy";
 
-
         /**
          * Hide carrier information on notification drawer
          * @hide
          */
         public static final String NOTIFICATION_HIDE_CARRIER = "notification_hide_carrier";
 
-
         /**
-          * Stores values for notification shortcut targets
-          * @hide
-          */
+         * Stores values for notification shortcut targets
+         * @hide
+         */
         public static final String NOTIFICATION_SHORTCUTS_CONFIG = "notification_shortcuts_config";
 
         /**
