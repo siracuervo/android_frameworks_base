@@ -104,6 +104,7 @@ public class KeyguardViewManager {
     private Drawable mCustomBackground = null;
     private int mBlurRadius = 14;
     private boolean mSeeThrough = false;
+    private boolean mIsCoverflow = false;
 
 
     private NotificationHostView mNotificationView;
@@ -113,8 +114,9 @@ public class KeyguardViewManager {
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
         public void onSetBackground(Bitmap bmp) {
+            mIsCoverflow = (bmp != null);
             mKeyguardHost.setCustomBackground(bmp != null ?
-                    new BitmapDrawable(mContext.getResources(), bmp) : null);
+                    new BitmapDrawable(mContext.getResources(), bmp) : mCustomBackground);
             updateShowWallpaper(bmp == null);
         }
     };
@@ -270,6 +272,7 @@ public class KeyguardViewManager {
         if (mSeeThrough) {
                 bmp = blurBitmap(bmp, mBlurRadius);
         }
+        mIsCoverflow = false;
         mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
     }
 
@@ -388,16 +391,20 @@ public class KeyguardViewManager {
 
             final int bgWidth = background.getIntrinsicWidth();
             final int bgHeight = background.getIntrinsicHeight();
+
             final int vWidth = getWidth();
             final int vHeight = getHeight();
+            if (mIsCoverflow) {
+                final float bgAspect = (float) bgWidth / bgHeight;
+                final float vAspect = (float) vWidth / vHeight;
 
-            final float bgAspect = (float) bgWidth / bgHeight;
-            final float vAspect = (float) vWidth / vHeight;
-
-            if (bgAspect > vAspect) {
-                background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
+                if (bgAspect > vAspect) {
+                    background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
+                } else {
+                    background.setBounds(0, 0, vWidth, (int) (vWidth / bgAspect));
+                }
             } else {
-                background.setBounds(0, 0, vWidth, (int) (vWidth * (vAspect >= 1 ? bgAspect : (1 / bgAspect))));
+                background.setBounds(0, 0, vWidth, vHeight);
             }
         }
 
