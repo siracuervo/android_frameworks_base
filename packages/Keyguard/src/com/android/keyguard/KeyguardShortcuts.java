@@ -43,7 +43,6 @@ import com.android.internal.util.liquid.ButtonConfig;
 import com.android.internal.util.liquid.DeviceUtils;
 import com.android.internal.util.liquid.LockscreenTargetUtils;
 import com.android.internal.util.liquid.LiquidActions;
-import com.android.internal.widget.LockPatternUtils;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -108,6 +107,9 @@ public class KeyguardShortcuts extends LinearLayout {
             i.setLayoutParams(vp);
             i.setImageDrawable(ButtonsHelper.getButtonIconImage(
                     mContext, buttonConfig.getClickAction(), buttonConfig.getIcon()));
+
+            i.setContentDescription(AppHelper.getFriendlyNameForUri(
+                    mContext, mPackageManager, buttonConfig.getClickAction()));
 
             if (longpress) {
                 i.setOnLongClickListener(new View.OnLongClickListener() {
