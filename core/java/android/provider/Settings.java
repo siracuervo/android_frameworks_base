@@ -3042,6 +3042,12 @@ public final class Settings {
          */
         public static final String DUAL_PANE_PREFS = "dual_pane_prefs";
 
+	    /**
+         * Alt Activity Resolver Grid
+         * @hide
+         */
+        public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
+
         /**
          * ListView Animations
          * 0 == None
