@@ -1058,7 +1058,7 @@ public class LocationManagerService extends ILocationManager.Stub {
     public List<String> getProviders(Criteria criteria, boolean enabledOnly) {
         int allowedResolutionLevel = getCallerAllowedResolutionLevel();
         ArrayList<String> out;
-        int uid = Binder.getCallingUid();;
+        int uid = Binder.getCallingUid();
         long identity = Binder.clearCallingIdentity();
         try {
             synchronized (mLock) {
@@ -1214,8 +1214,7 @@ public class LocationManagerService extends ILocationManager.Stub {
 
         if (records != null) {
             for (UpdateRecord record : records) {
-                if (UserHandle.getUserId(record.mReceiver.mUid) == mCurrentUserId &&
-                            !mBlacklist.isBlacklisted(record.mReceiver.mPackageName)) {
+                if (UserHandle.getUserId(record.mReceiver.mUid) == mCurrentUserId) {
                     if (checkLocationAccess(record.mReceiver.mUid, record.mReceiver.mPackageName,
                             record.mReceiver.mAllowedResolutionLevel)) {
                         LocationRequest locationRequest = record.mRequest;
@@ -1451,9 +1450,12 @@ public class LocationManagerService extends ILocationManager.Stub {
             checkLocationAccess(uid, packageName, allowedResolutionLevel);
 
             synchronized (mLock) {
-                Receiver recevier = checkListenerOrIntentLocked(listener, intent, pid, uid,
+                Receiver receiver = checkListenerOrIntentLocked(listener, intent, pid, uid,
                         packageName, workSource, hideFromAppOps);
-                requestLocationUpdatesLocked(sanitizedRequest, recevier, pid, uid, packageName);
+                if (receiver != null) {
+                        requestLocationUpdatesLocked(sanitizedRequest, receiver, pid,
+                            uid, packageName);
+                }
             }
         } finally {
             Binder.restoreCallingIdentity(identity);
@@ -1512,7 +1514,9 @@ public class LocationManagerService extends ILocationManager.Stub {
             // providers may use public location API's, need to clear identity
             long identity = Binder.clearCallingIdentity();
             try {
-                removeUpdatesLocked(receiver);
+                if (receiver != null) {
+                    removeUpdatesLocked(receiver);
+                }
             } finally {
                 Binder.restoreCallingIdentity(identity);
             }
