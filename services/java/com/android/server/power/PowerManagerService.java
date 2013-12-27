@@ -371,6 +371,11 @@ public final class PowerManagerService extends IPowerManager.Stub
     // Use -1 to disable.
     private int mScreenBrightnessOverrideFromWindowManager = -1;
 
+    // The button brightness setting override from the window manager
+    // to allow the current foreground activity to override the button brightness.
+    // Use -1 to disable.
+    private int mButtonBrightnessOverrideFromWindowManager = -1;
+
     // The user activity timeout override from the window manager
     // to allow the current foreground activity to override the user activity timeout.
     // Use -1 to disable.
@@ -595,11 +600,9 @@ public final class PowerManagerService extends IPowerManager.Stub
                 UserHandle.USER_CURRENT);
         mStayOnWhilePluggedInSetting = Settings.Global.getInt(resolver,
                 Settings.Global.STAY_ON_WHILE_PLUGGED_IN, BatteryManager.BATTERY_PLUGGED_AC);
-
         mElectronBeamMode = Settings.System.getIntForUser(resolver,
                 Settings.System.SYSTEM_POWER_CRT_MODE,
                 1, UserHandle.USER_CURRENT);
-
 
         final int oldScreenBrightnessSetting = mScreenBrightnessSetting;
         mScreenBrightnessSetting = Settings.System.getIntForUser(resolver,
@@ -631,7 +634,6 @@ public final class PowerManagerService extends IPowerManager.Stub
         mButtonTimeout = Settings.System.getIntForUser(resolver,
                 Settings.System.BUTTON_BACKLIGHT_TIMEOUT,
                 DEFAULT_BUTTON_ON_DURATION, UserHandle.USER_CURRENT);
-
         mButtonBrightness = Settings.System.getIntForUser(resolver,
                 Settings.System.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
@@ -1022,6 +1024,10 @@ public final class PowerManagerService extends IPowerManager.Stub
                     // If hiding keyboard, turn off leds
                     setKeyboardLight(false, 1);
                     setKeyboardLight(false, 2);
+                }
+                synchronized (mLock) {
+                    mDirty |= DIRTY_USER_ACTIVITY;
+                    updatePowerStateLocked();
                 }
             }
         }
@@ -2271,9 +2277,24 @@ public final class PowerManagerService extends IPowerManager.Stub
      * @param brightness The overridden brightness, or -1 to disable the override.
      */
     public void setButtonBrightnessOverrideFromWindowManager(int brightness) {
-        // Do nothing.
-        // Button lights are not currently supported in the new implementation.
         mContext.enforceCallingOrSelfPermission(android.Manifest.permission.DEVICE_POWER, null);
+
+        final long ident = Binder.clearCallingIdentity();
+        try {
+            setButtonBrightnessOverrideFromWindowManagerInternal(brightness);
+        } finally {
+            Binder.restoreCallingIdentity(ident);
+        }
+    }
+
+    private void setButtonBrightnessOverrideFromWindowManagerInternal(int brightness) {
+        synchronized (mLock) {
+            if (mButtonBrightnessOverrideFromWindowManager != brightness) {
+                mButtonBrightnessOverrideFromWindowManager = brightness;
+                mDirty |= DIRTY_SETTINGS;
+                updatePowerStateLocked();
+            }
+        }
     }
 
     /**
