@@ -763,9 +763,10 @@ final class ActivityStack {
         prev.state = ActivityState.PAUSING;
         prev.task.touchActiveTime();
         clearLaunchTime(prev);
-	    if (!prev.isHomeActivity()) {
+        final ActivityRecord next = mStackSupervisor.topRunningActivityLocked();
+        if (next == null || next.task != prev.task) {
             prev.updateThumbnail(screenshotActivities(prev), null);
-	    }
+        }
         stopFullyDrawnTraceIfNeeded();
 
         mService.updateCpuStats();
