@@ -74,7 +74,7 @@ import android.widget.RemoteViews;
 import com.android.internal.widget.multiwaveview.GlowPadView;
 import com.android.internal.widget.multiwaveview.GlowPadView.OnTriggerListener;
 import com.android.internal.widget.multiwaveview.TargetDrawable;
-import com.android.internal.util.slim.QuietHoursHelper;
+import com.android.internal.util.liquid.QuietHoursHelper;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
