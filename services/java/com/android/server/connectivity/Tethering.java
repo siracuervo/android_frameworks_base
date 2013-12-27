@@ -39,10 +39,12 @@ import android.net.RouteInfo;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.IBinder;
 import android.os.INetworkManagementService;
 import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.Log;
@@ -521,7 +523,6 @@ public class Tethering extends INetworkManagementEventObserver.Stub {
                     IntentFilter filter = new IntentFilter(ACTION_TURN_WIFI_AP_OFF);
                     mContext.registerReceiver(mNotificationBroadcastReceiver, filter);
                 }
-
             }
             mTetheredNotification = builder.build();
             mTetheredNotification.defaults &= ~Notification.DEFAULT_SOUND;
