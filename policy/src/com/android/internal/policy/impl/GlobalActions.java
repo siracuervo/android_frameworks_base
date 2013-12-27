@@ -357,7 +357,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             // silent mode
             } else if ((config.getClickAction().equals(PolicyConstants.ACTION_SOUND)) && (mShowSilentToggle)) {
                 mItems.add(mSilentModeAction);
-            // must be a custom app or action shorcut
+            // must be a custom app or action shortcut
             } else if (config.getClickAction() != null) {
                 mItems.add(
                     new SinglePressAction(PolicyHelper.getPowerMenuIconImage(mContext,
