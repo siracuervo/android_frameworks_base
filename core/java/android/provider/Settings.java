@@ -3459,6 +3459,12 @@ public final class Settings {
         public static final String ACTIVE_DISPLAY_EXCLUDED_APPS = "active_display_excluded_apps";
 
         /**
+         * HALO enabled, should default to 0 (HALO is disabled)
+         * @hide
+         */
+        public static final String HALO_ENABLED = "halo_enabled";
+
+        /**
          * Whether to disable haptic feedback during quiet hours.
          * HALO, should default to 0 (no, do not show)
          * @hide
