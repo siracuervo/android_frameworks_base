@@ -18,6 +18,7 @@
 
 <resources>
 
+    <!-- Battery View -->
     <declare-styleable name="BatteryIcon">
         <attr name="batteryView" format="string" />
     </declare-styleable>
