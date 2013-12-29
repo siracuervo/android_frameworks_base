@@ -673,7 +673,7 @@ public class ActiveDisplayView extends FrameLayout {
 
     private synchronized void handleShowNotification(boolean ping) {
         if (!mDisplayNotifications || mNotification == null ||
-                QuietHoursHelper.inQuietHours()) return;
+                QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_ENABLED)) return;
         handleShowNotificationView();
         setActiveNotification(mNotification, true);
         inflateRemoteView(mNotification);
@@ -1134,7 +1134,7 @@ public class ActiveDisplayView extends FrameLayout {
                 if (isFar) {
                     mProximityIsFar = true;
                     if (!isScreenOn() && mPocketMode != POCKET_MODE_OFF && !isOnCall() &&
-                            !QuietHoursHelper.inQuietHours()) {
+                            !QuietHoursHelper.inQuietHours(mContext, Settings.System.QUIET_HOURS_ENABLED)) {
                         if (System.currentTimeMillis() >= (mPocketTime + mProximityThreshold) && mPocketTime != 0){
 
                             if (mNotification == null) {
