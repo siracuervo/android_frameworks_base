@@ -176,6 +176,7 @@ public class NotificationManagerService extends INotificationManager.Stub
 
     // for enabling and disabling notification pulse behavior
     private boolean mScreenOn = true;
+    private boolean mDreaming = false;
     private boolean mWasScreenOn = true;
     private boolean mInCall = false;
     private boolean mNotificationPulseEnabled;
@@ -1455,6 +1456,14 @@ public class NotificationManagerService extends INotificationManager.Stub
                 mScreenOn = false;
                 mWasScreenOn = true;
                 updateLightsLocked();
+            } else if (action.equals(Intent.ACTION_DREAMING_STARTED)) {
+                mDreaming = true;
+                updateNotificationPulse();
+            } else if (action.equals(Intent.ACTION_DREAMING_STOPPED)) {
+                mDreaming = false;
+                if (mScreenOn) {
+                    mNotificationLight.turnOff();
+                }
             } else if (action.equals(TelephonyManager.ACTION_PHONE_STATE_CHANGED)) {
                 mInCall = (intent.getStringExtra(TelephonyManager.EXTRA_STATE).equals(
                         TelephonyManager.EXTRA_STATE_OFFHOOK));
