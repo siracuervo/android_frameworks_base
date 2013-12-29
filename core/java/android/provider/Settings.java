@@ -3571,6 +3571,18 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIFICATION_COUNT = "status_bar_notification_count";
 
         /**
+         * Swap volume buttons when the screen is rotated by 90 or 180 degrees
+         * @hide
+         */
+        public static final String SWAP_VOLUME_KEYS_BY_ROTATE = "swap_volume_keys_by_rotate";
+
+        /**
+         * Adjust the vibration multiplier to control vibration strength
+         * @hide
+         */
+        public static final String VIBRATION_MULTIPLIER = "vibration_multiplier";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
