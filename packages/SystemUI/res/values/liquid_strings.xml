@@ -108,5 +108,6 @@
     <string name="halo_signal_bars_2">TWO BARS</string>
     <string name="halo_signal_bars_1">ONE BAR</string>
     <string name="halo_signal_bars_none">NO BARS</string>
+    <string name="accessibility_halo">Create notification halo</string>
 
 </resources>
