@@ -1410,13 +1410,20 @@ status_t compileResourceFile(Bundle* bundle,
                     }
                 }
             } else if (strcmp16(block.getElementName(&len), string_array16.string()) == 0) {
+                // Note the existence and locale of every string we process
+                char rawLocale[16];
+                curParams.getLocale(rawLocale);
+                String8 locale(rawLocale);
+                String16 name;
                 // Check whether these strings need valid formats.
                 // (simplified form of what string16 does above)
                 size_t n = block.getAttributeCount();
                 for (size_t i = 0; i < n; i++) {
                     size_t length;
                     const uint16_t* attr = block.getAttributeName(i, &length);
-                    if (strcmp16(attr, translatable16.string()) == 0
+                    if (strcmp16(attr, name16.string()) == 0) {
+                        name.setTo(block.getAttributeStringValue(i, &length));
+                    } else if (strcmp16(attr, translatable16.string()) == 0
                             || strcmp16(attr, formatted16.string()) == 0) {
                         const uint16_t* value = block.getAttributeStringValue(i, &length);
                         if (strcmp16(value, false16.string()) == 0) {
