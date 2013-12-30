@@ -163,4 +163,7 @@
   <!-- Statusbar double tap gesture -->
   <java-symbol type="bool" name="config_disableDoubleTapSleepGesture" />
 
+  <!-- Device has a h/w rotation lock switch -->
+  <java-symbol type="bool" name="config_hasRotationLockSwitch" />
+
 </resources>
