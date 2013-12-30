@@ -37,6 +37,9 @@
     <color name="batterymeter_bolt_color">#FF000000</color><!-- 100% black -->
     <color name="status_bar_clock_color">#FFFFFFFF</color>
 
+    <!-- Color for the "No recent apps" text in the recent apps list. -->
+    <color name="no_recent_apps">#bebebe</color>
+
     <!-- Notification Shortcuts -->
     <drawable name="notification_shortcut_background_color">#00000000</drawable>
     <drawable name="notification_item_background_color">#ff111111</drawable>
