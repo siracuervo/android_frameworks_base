@@ -3571,6 +3571,12 @@ public final class Settings {
         public static final String STATUS_BAR_NOTIFICATION_COUNT = "status_bar_notification_count";
 
         /**
+         * Whether to show the signal text or signal bars
+         * @hide
+         */
+        public static final String STATUS_BAR_SIGNAL_TEXT = "status_bar_signal";
+
+        /**
          * Swap volume buttons when the screen is rotated by 90 or 180 degrees
          * @hide
          */
