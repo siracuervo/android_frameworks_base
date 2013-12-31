@@ -534,7 +534,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
             } else {
                 // Move
                 mBOOST.cpuBoost(1500000);
-                mState = State.DRAG;
+                mState = STATE_DRAG;
                 mEffect.intro();
             }
             return true;
@@ -746,7 +746,7 @@ public class Halo extends FrameLayout implements Ticker.TickerCallback {
                         if (initialDistance > mIconSize * 0.7f) {
                             if (mInteractionReversed) {
                                 mBOOST.cpuBoost(1500000);
-                                mState = State.GESTURES;
+                                mState = STATE_GESTURES;
                                 mEffect.wake();
                                 mBar.setHaloTaskerActive(true, true);
                             } else {
