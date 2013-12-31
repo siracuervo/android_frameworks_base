@@ -101,11 +101,10 @@ public class KeyguardViewManager {
 
     private boolean mScreenOn = false;
     private LockPatternUtils mLockPatternUtils;
-    private Drawable mCustomBackground = null;
-    private int mBlurRadius = 14;
-    private boolean mSeeThrough = false;
-    private boolean mIsCoverflow = false;
 
+    private Bitmap mBlurredImage = null;
+    private int mBlurRadius = 12;
+    private boolean mSeeThrough = false;
 
     private NotificationHostView mNotificationView;
     private NotificationViewManager mNotificationViewManager;
@@ -114,10 +113,9 @@ public class KeyguardViewManager {
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
         public void onSetBackground(Bitmap bmp) {
-            mIsCoverflow = (bmp != null);
-            mKeyguardHost.setCustomBackground(bmp != null ?
-                    new BitmapDrawable(mContext.getResources(), bmp) : mCustomBackground);
-            updateShowWallpaper(bmp == null);
+            mKeyguardHost.setCustomBackground( new BitmapDrawable(mContext.getResources(), 
+                        bmp != null ? bmp : mBlurredImage) );
+            updateShowWallpaper(bmp == null && mBlurredImage == null);
         }
     };
 
@@ -143,7 +141,6 @@ public class KeyguardViewManager {
         @Override
         public void onChange(boolean selfChange) {
             updateSettings();
-            setKeyguardParams();
             if (mKeyguardHost == null) {
                 maybeCreateKeyguardLocked(shouldEnableScreenRotation(), false, null);
                 hide();
@@ -159,7 +156,7 @@ public class KeyguardViewManager {
                 Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
         mLockscreenNotifications = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_NOTIFICATIONS, mLockscreenNotifications ? 1 : 0) == 1;
-        if(!mSeeThrough) mCustomBackground = null;
+        if(!mSeeThrough) mBlurredImage = null;
         if(mLockscreenNotifications && mNotificationViewManager == null) {
             mNotificationViewManager = new NotificationViewManager(mContext, this);
         } else if(!mLockscreenNotifications && mNotificationViewManager != null) {
@@ -184,6 +181,7 @@ public class KeyguardViewManager {
 
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
+
         updateSettings();
     }
 
@@ -217,41 +215,6 @@ public class KeyguardViewManager {
         mKeyguardView.requestFocus();
     }
 
-    public void setKeyguardParams() {
-        boolean enableScreenRotation = shouldEnableScreenRotation();
-
-        int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
-                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
-
-            if (!isSeeThroughEnabled()) {
-                flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            }
-
-            if (!mNeedsInput) {
-                flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
-            }
-
-            final int stretch = ViewGroup.LayoutParams.MATCH_PARENT;
-            final int type = WindowManager.LayoutParams.TYPE_KEYGUARD;
-            WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                    stretch, stretch, type, flags, PixelFormat.TRANSLUCENT);
-            lp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
-            lp.windowAnimations = R.style.Animation_LockScreen;
-            lp.screenOrientation = enableScreenRotation ?
-                    ActivityInfo.SCREEN_ORIENTATION_USER : ActivityInfo.SCREEN_ORIENTATION_NOSENSOR;
-
-            if (ActivityManager.isHighEndGfx()) {
-                lp.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;
-                lp.privateFlags |=
-                        WindowManager.LayoutParams.PRIVATE_FLAG_FORCE_HARDWARE_ACCELERATED;
-            }
-            lp.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_SET_NEEDS_MENU_KEY;
-            lp.inputFeatures |= WindowManager.LayoutParams.INPUT_FEATURE_DISABLE_USER_ACTIVITY;
-            lp.setTitle("Keyguard");
-            mWindowLayoutParams = lp;
-    }
-
     private boolean shouldEnableScreenRotation() {
         Resources res = mContext.getResources();
         boolean enableLockScreenRotation = Settings.System.getInt(mContext.getContentResolver(),
@@ -269,25 +232,20 @@ public class KeyguardViewManager {
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-        if (mSeeThrough) {
-                bmp = blurBitmap(bmp, mBlurRadius);
+        if (bmp != null && mSeeThrough) {
+            mBlurredImage = mBlurRadius > 0 ? blurBitmap(bmp, mBlurRadius)
+                : bmp;
+        } else {
+            mBlurredImage = null;
         }
-        mIsCoverflow = false;
-        mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
     }
 
     private Bitmap blurBitmap(Bitmap bmp, int radius) {
-        Bitmap tmpBmp = bmp;
-
-        // scale image if it's too large
-        if (bmp.getWidth() > MAX_BLUR_WIDTH)
-            tmpBmp = bmp.createScaledBitmap(bmp, MAX_BLUR_WIDTH, MAX_BLUR_HEIGHT, false);
-
-        Bitmap out = Bitmap.createBitmap(tmpBmp);
+        Bitmap out = Bitmap.createBitmap(bmp);
         RenderScript rs = RenderScript.create(mContext);
 
         Allocation input = Allocation.createFromBitmap(
-                rs, tmpBmp, MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+                rs, bmp, MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
         Allocation output = Allocation.createTyped(rs, input.getType());
 
         ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
@@ -297,6 +255,7 @@ public class KeyguardViewManager {
 
         output.copyTo(out);
 
+        rs.destroy();
         return out;
     }
 
@@ -394,17 +353,19 @@ public class KeyguardViewManager {
 
             final int vWidth = getWidth();
             final int vHeight = getHeight();
-            if (mIsCoverflow) {
-                final float bgAspect = (float) bgWidth / bgHeight;
-                final float vAspect = (float) vWidth / vHeight;
-
-                if (bgAspect > vAspect) {
-                    background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
-                } else {
-                    background.setBounds(0, 0, vWidth, (int) (vWidth / bgAspect));
-                }
-            } else {
+ 
+            if (bgWidth == vWidth && bgHeight == vHeight) {
                 background.setBounds(0, 0, vWidth, vHeight);
+                return;
+            }
+
+            final float bgAspect = (float) bgWidth / bgHeight;
+            final float vAspect = (float) vWidth / vHeight;
+
+            if (bgAspect > vAspect) {
+                background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
+            } else {
+                background.setBounds(0, 0, vWidth, (int) (vWidth / bgAspect));
             }
         }
 
@@ -603,11 +564,8 @@ public class KeyguardViewManager {
 
             int flags = WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
-                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
-
-            if (!mSeeThrough) {
-                flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            }
+                    | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN
+                    | WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
 
             if (!mNeedsInput) {
                 flags |= WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM;
@@ -643,8 +601,8 @@ public class KeyguardViewManager {
             mKeyguardView.requestFocus();
         }
 
-        if(mCustomBackground != null) {
-            mKeyguardHost.setCustomBackground(mCustomBackground);
+        if(mBlurredImage != null) {
+            KeyguardUpdateMonitor.getInstance(mContext).dispatchSetBackground(mBlurredImage);
         }
 
         updateUserActivityTimeoutInWindowLayoutParams();
@@ -729,14 +687,11 @@ public class KeyguardViewManager {
     }
 
     void updateShowWallpaper(boolean show) {
-        if (mSeeThrough) show = false;
-
         if (show) {
             mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
         } else {
             mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
         }
-
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
