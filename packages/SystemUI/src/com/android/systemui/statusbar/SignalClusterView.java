@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.os.Handler;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -41,6 +42,7 @@ public class SignalClusterView
     static final String TAG = "SignalClusterView";
 
     NetworkController mNC;
+    private SettingsObserver mObserver;
 
     private static final int SIGNAL_CLUSTER_STYLE_NORMAL = 0;
 
@@ -70,6 +72,10 @@ public class SignalClusterView
                     Settings.System.STATUS_BAR_SIGNAL_TEXT), false, this);
         }
 
+        void unobserve() {
+            mContext.getContentResolver().unregisterContentObserver(this);
+        }
+
         @Override
         public void onChange(boolean selfChange) {
             updateSettings();
@@ -89,8 +95,7 @@ public class SignalClusterView
 
         mHandler = new Handler();
 
-        SettingsObserver settingsObserver = new SettingsObserver(mHandler);
-        settingsObserver.observe();
+        mObserver = new SettingsObserver(mHandler);
     }
 
     public void setNetworkController(NetworkController nc) {
@@ -101,6 +106,8 @@ public class SignalClusterView
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
+        mObserver.observe();
 
         mWifiGroup      = (ViewGroup) findViewById(R.id.wifi_combo);
         mWifi           = (ImageView) findViewById(R.id.wifi_signal);
@@ -115,6 +122,9 @@ public class SignalClusterView
 
     @Override
     protected void onDetachedFromWindow() {
+
+        mObserver.unobserve();
+
         mWifiGroup      = null;
         mWifi           = null;
         mMobileGroup    = null;
@@ -248,10 +258,10 @@ public class SignalClusterView
         }
     }
 
-    private void updateSettings() {
+    public void updateSettings() {
         ContentResolver resolver = mContext.getContentResolver();
-        mSignalClusterStyle = (Settings.System.getInt(resolver,
-                Settings.System.STATUS_BAR_SIGNAL_TEXT, SIGNAL_CLUSTER_STYLE_NORMAL));
+        mSignalClusterStyle = Settings.System.getIntForUser(resolver,
+                Settings.System.STATUS_BAR_SIGNAL_TEXT, SIGNAL_CLUSTER_STYLE_NORMAL,
+                UserHandle.USER_CURRENT);
         updateSignalClusterStyle();
-    }
 }
