@@ -173,4 +173,7 @@
   <!-- LED flashlight -->
   <java-symbol type="bool" name="config_enableTorch" />
 
+  <!-- Legacy USB manager -->
+  <java-symbol type="string" name="config_legacyUmsLunFile" />
+
 </resources>
