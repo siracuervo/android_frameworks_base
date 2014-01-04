@@ -3644,6 +3644,13 @@ public final class Settings {
         public static final String VIBRATION_MULTIPLIER = "vibration_multiplier";
 
         /**
+         * Allows blurring the lockscreen background
+         * @hide
+        */
+        public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
+        public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
+
+        /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *

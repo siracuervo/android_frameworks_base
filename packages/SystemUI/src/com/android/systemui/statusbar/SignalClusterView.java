@@ -264,4 +264,5 @@ public class SignalClusterView
                 Settings.System.STATUS_BAR_SIGNAL_TEXT, SIGNAL_CLUSTER_STYLE_NORMAL,
                 UserHandle.USER_CURRENT);
         updateSignalClusterStyle();
+   }
 }
