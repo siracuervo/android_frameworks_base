@@ -36,7 +36,7 @@ import android.util.Log;
 import android.view.View;
 
 import com.android.internal.util.liquid.AppHelper;
-import com.android.internal.util.liquid.liquidActions;
+import com.android.internal.util.liquid.LiquidActions;
 import com.android.systemui.R;
 import com.android.systemui.statusbar.phone.QuickSettingsContainerView;
 import com.android.systemui.statusbar.phone.QuickSettingsController;
@@ -82,7 +82,7 @@ public class CustomTile extends QuickSettingsTile {
         mOnLongClick = new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                liquidActions.processActionWithOptions(
+                LiquidActions.processActionWithOptions(
                         mContext, mLongActions[mState], false, mCollapse);
                 return true;
             }
@@ -185,10 +185,10 @@ public class CustomTile extends QuickSettingsTile {
         mShared.edit().putInt("state" + mKey, mState).commit();
 
         if (mMatchState && mNumberOfActions >= 1) {
-            liquidActions.processActionWithOptions(
+            LiquidActions.processActionWithOptions(
                     mContext, mClickActions[mStateMatched], false, mCollapse);
         } else {
-            liquidActions.processActionWithOptions(
+            LiquidActions.processActionWithOptions(
                     mContext, mClickActions[mState], false, mCollapse);
         }
 
