@@ -25,11 +25,13 @@ import android.app.ActivityOptions;
 import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.ContentResolver;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.database.ContentObserver;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -39,6 +41,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.provider.Settings;
@@ -83,7 +86,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private PopupMenu mPopup;
     private View mRecentsScrim;
     private View mRecentsNoApps;
-    //private View mRecentsRamBar;
     private RecentsScrollView mRecentsContainer;
 
     private boolean mShowing;
@@ -101,8 +103,10 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private boolean mFitThumbnailToXY;
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
-
-    private ImageView mClearRecents;
+    private ImageView mClearRecentsBR;
+    private ImageView mClearRecentsBL;
+    private ImageView mClearRecentsTR;
+    private ImageView mClearRecentsTL;
     private LinearColorBar mRamUsageBar;
 
     private long mFreeMemory;
@@ -114,8 +118,18 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     TextView mFreeMemText;
     TextView mRamText;
 
+    private static int mClearPosition;
+    private static final int CLEAR_DISABLE = 0;
+    private static final int CLEAR_BOTTOM_RIGHT = 1;
+    private static final int CLEAR_BOTTOM_LEFT = 2;
+    private static final int CLEAR_TOP_RIGHT = 3;
+    private static final int CLEAR_TOP_LEFT = 4;
+
     MemInfoReader mMemInfoReader = new MemInfoReader();
-   
+
+    Handler mHandler = new Handler();
+    SettingsObserver mSettingsObserver;
+    private RecentsActivity mRecentsActivity;
 
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();
@@ -295,6 +309,24 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRecentItemLayoutId = a.getResourceId(R.styleable.RecentsPanelView_recentItemLayout, 0);
         mRecentTasksLoader = RecentTasksLoader.getInstance(context);
         a.recycle();
+
+        mSettingsObserver = new SettingsObserver(mHandler);
+    }
+
+    @Override
+    protected void onAttachedToWindow () {
+        super.onAttachedToWindow();
+        final ViewRootImpl root = getViewRootImpl();
+        if (root != null) {
+            root.setDrawDuringWindowsAnimating(true);
+        }
+        mSettingsObserver.observe();
+    }
+
+    @Override
+    protected void onDetachedFromWindow () {
+        mContext.getContentResolver().unregisterContentObserver(mSettingsObserver);
+        super.onDetachedFromWindow();
     }
 
     public int numItemsInOneScreenful() {
@@ -358,6 +390,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         sendCloseSystemWindows(mContext, BaseStatusBar.SYSTEM_DIALOG_REASON_RECENT_APPS);
 
         mShowing = show;
+        mClearPosition = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.CLEAR_RECENTS_POSITION, 0);
 
         if (show) {
             // if there are no apps, bring up a "No recent apps" message
@@ -365,7 +399,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     && (mRecentTaskDescriptions.size() == 0);
             mRecentsNoApps.setAlpha(1f);
             mRecentsNoApps.setVisibility(noApps ? View.VISIBLE : View.INVISIBLE);
-            mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
+
             onAnimationEnd(null);
             setFocusable(true);
             setFocusableInTouchMode(true);
@@ -377,14 +411,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             if (mPopup != null) {
                 mPopup.dismiss();
             }
-        }
-    }
-
-    protected void onAttachedToWindow () {
-        super.onAttachedToWindow();
-        final ViewRootImpl root = getViewRootImpl();
-        if (root != null) {
-            root.setDrawDuringWindowsAnimating(true);
         }
     }
 
@@ -471,17 +497,105 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
-	//mRecentsRamBar = findViewById(R.id.recents_ram_bar);
 
-        mClearRecents = (ImageView) findViewById(R.id.recents_clear);
-        if (mClearRecents != null){
-            mClearRecents.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mRecentsContainer.removeAllViewsInLayout();
+        mClearRecentsBR = (ImageView) findViewById(R.id.recents_clear_BR);
+        mClearRecentsBR.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+            }
+        });
+        mClearRecentsBR.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
                 }
-            });
-        }
+
+                return true;
+            }
+        });
+        mClearRecentsBL = (ImageView) findViewById(R.id.recents_clear_BL);
+        mClearRecentsBL.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+            }
+        });
+        mClearRecentsBL.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
+                }
+
+                return true;
+            }
+        });
+        mClearRecentsTR = (ImageView) findViewById(R.id.recents_clear_TR);
+        mClearRecentsTR.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+            }
+        });
+        mClearRecentsTR.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
+                }
+                return true;
+            }
+        });
+        mClearRecentsTL = (ImageView) findViewById(R.id.recents_clear_TL);
+        mClearRecentsTL.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+            }
+        });
+        mClearRecentsTL.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
+                }
+                return true;
+            }
+        });
 
         if (mRecentsScrim != null) {
             mHighEndGfx = ActivityManager.isHighEndGfx();
@@ -492,7 +606,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 ((BitmapDrawable) mRecentsScrim.getBackground()).setTileModeY(TileMode.REPEAT);
             }
         }
-	updateRamBar();
+	    updateRamBar();
     }
 
     public void setMinSwipeAlpha(float minAlpha) {
@@ -1012,6 +1126,65 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             return reader.readLine();
         } finally {
             reader.close();
+        }
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.System
+                    .getUriFor(Settings.System.CLEAR_RECENTS_POSITION),
+                    false, this);
+            updateSettings();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            updateSettings();
+        }
+    }
+
+    public void updateSettings() {
+        mClearPosition = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.CLEAR_RECENTS_POSITION, 0);
+        boolean noApps = mRecentTaskDescriptions != null
+                    && (mRecentTaskDescriptions.size() == 0);
+
+        switch (mClearPosition) {
+            case CLEAR_DISABLE:
+                mClearRecentsBR.setVisibility(View.GONE);
+                mClearRecentsBL.setVisibility(View.GONE);
+                mClearRecentsTR.setVisibility(View.GONE);
+                mClearRecentsTL.setVisibility(View.GONE);
+                break;
+            case CLEAR_BOTTOM_RIGHT:
+                mClearRecentsBR.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                mClearRecentsBL.setVisibility(View.GONE);
+                mClearRecentsTR.setVisibility(View.GONE);
+                mClearRecentsTL.setVisibility(View.GONE);
+                break;
+            case CLEAR_BOTTOM_LEFT:
+                mClearRecentsBR.setVisibility(View.GONE);
+                mClearRecentsBL.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                mClearRecentsTR.setVisibility(View.GONE);
+                mClearRecentsTL.setVisibility(View.GONE);
+                break;
+            case CLEAR_TOP_RIGHT:
+                mClearRecentsBR.setVisibility(View.GONE);
+                mClearRecentsBL.setVisibility(View.GONE);
+                mClearRecentsTR.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                mClearRecentsTL.setVisibility(View.GONE);
+                break;
+            case CLEAR_TOP_LEFT:
+                mClearRecentsBR.setVisibility(View.GONE);
+                mClearRecentsBL.setVisibility(View.GONE);
+                mClearRecentsTR.setVisibility(View.GONE);
+                mClearRecentsTL.setVisibility(noApps ? View.GONE : View.VISIBLE);
+                break;
         }
     }
 }
