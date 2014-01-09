@@ -14285,10 +14285,10 @@ public final class ActivityManagerService extends ActivityManagerNative
 	    int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
 	    if(mHaloEnabled != 1){
-		    if (mWindowManager.isTaskSplitView(starting.task.taskId)) {
+		    if (mWindowManager != null && starting != null && mWindowManager.isTaskSplitView(starting.task.taskId)) {
 			Log.e("XPLOD", "Split view restoring task " + starting.task.taskId + " -- " + mIgnoreSplitViewUpdate.size());
 			ActivityRecord second = mainStack.topRunningActivityLocked(starting);
-			if (mWindowManager.isTaskSplitView(second.task.taskId)) {
+			if (second != null && mWindowManager.isTaskSplitView(second.task.taskId)) {
 			    Log.e("XPLOD", "Split view restoring also task " + second.task.taskId);
 			    kept = kept && mainStack.ensureActivityConfigurationLocked(second, changes);
 			    mStackSupervisor.ensureActivitiesVisibleLocked(second, changes);
