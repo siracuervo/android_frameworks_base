@@ -295,7 +295,7 @@ public class BatteryCircleMeterView extends ImageView {
                 Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR, -2,
                 UserHandle.USER_CURRENT);
         mCircleAnimSpeed = Settings.System.getIntForUser(resolver,
-                Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED, 3,
+                Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED, 0,
                 UserHandle.USER_CURRENT);
 
         int defaultColor = res.getColor(com.android.systemui.R.color.batterymeter_charge_color);
