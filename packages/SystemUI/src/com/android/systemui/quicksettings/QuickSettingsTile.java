@@ -23,7 +23,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -58,7 +57,6 @@ public class QuickSettingsTile implements OnClickListener {
     protected int mTileTextSize;
     protected int mTileTextColor;
     protected int mTileTextPadding;
-    protected Drawable mRealDrawable;
 
     protected PhoneStatusBar mStatusbarService;
     protected QuickSettingsController mQsc;
@@ -71,7 +69,6 @@ public class QuickSettingsTile implements OnClickListener {
     public QuickSettingsTile(Context context, QuickSettingsController qsc, int layout) {
         mContext = context;
         mDrawable = R.drawable.ic_notifications;
-        mRealDrawable = null;
         mLabel = mContext.getString(R.string.quick_settings_label_enabled);
         mStatusbarService = qsc.mStatusBarService;
         mQsc = qsc;
@@ -123,11 +120,7 @@ public class QuickSettingsTile implements OnClickListener {
         }
         ImageView image = (ImageView) mTile.findViewById(R.id.image);
         if (image != null) {
-            if (mRealDrawable == null) {
-                image.setImageResource(mDrawable);
-            } else {
-                image.setImageDrawable(mRealDrawable);
-            }
+            image.setImageResource(mDrawable);
         }
     }
 

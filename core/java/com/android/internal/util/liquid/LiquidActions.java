@@ -55,12 +55,6 @@ public class LiquidActions {
     private static final int MSG_INJECT_KEY_UP = 1067;
 
     public static void processAction(Context context, String action, boolean isLongpress) {
-        processActionWithOptions(context, action, isLongpress, true);
-    }
-
-    public static void processActionWithOptions(
-                Context context, String action, boolean isLongpress,
-                boolean collapseShade) {
             if (action == null || action.equals(ButtonsConstants.ACTION_NULL)) {
                 return;
             }
@@ -83,15 +77,13 @@ public class LiquidActions {
             } catch (RemoteException e) {
             }
 
-            if (collapseShade) {
-                    if (!action.equals(ButtonsConstants.ACTION_QS)
-                            && !action.equals(ButtonsConstants.ACTION_NOTIFICATIONS)
-                            && !action.equals(ButtonsConstants.ACTION_TORCH)) {
-                        try {
-                            barService.collapsePanels();
-                        } catch (RemoteException ex) {
-                        }
-                    }
+            if (!action.equals(ButtonsConstants.ACTION_QS)
+                    && !action.equals(ButtonsConstants.ACTION_NOTIFICATIONS)
+                    && !action.equals(ButtonsConstants.ACTION_TORCH)) {
+                try {
+                    barService.collapsePanels();
+                } catch (RemoteException ex) {
+                }
             }
 
             // process the actions
