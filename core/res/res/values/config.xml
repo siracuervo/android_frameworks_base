@@ -1408,4 +1408,7 @@
     <string name="config_perf_profile_prop">sys.perf.profile</string>
     <string name="config_perf_profile_default_entry">1</string>
 
+    <!-- Force permanent menu key -->
+    <bool name="config_force_permanent_menu_key">false</bool>
+
 </resources>
