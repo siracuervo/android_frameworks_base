@@ -3052,12 +3052,6 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
 
-        /**
-         * Ability to enable/disable dual pane mode
-         * @hide
-         */
-        public static final String DUAL_PANE_PREFS = "dual_pane_prefs";
-
 	    /**
          * Alt Activity Resolver Grid
          * @hide
