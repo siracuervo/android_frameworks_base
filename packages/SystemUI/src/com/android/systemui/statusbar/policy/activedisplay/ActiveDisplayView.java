@@ -582,14 +582,14 @@ public class ActiveDisplayView extends FrameLayout {
                 }
                 KeyguardTouchDelegate.getInstance(mContext).dismiss();
             }
-            if (mNotification.isClearable()) {
-                try {
+            try {
+                 if (mNotification.isClearable()) {
                      mNM.cancelNotificationFromSystemListener(mNotificationListener,
-                             mNotification.getPackageName(), mNotification.getTag(),
-                             mNotification.getId());
-                } catch (RemoteException e) {
-                } catch (NullPointerException npe) {
-                }
+                         mNotification.getPackageName(), mNotification.getTag(),
+                         mNotification.getId());
+                 }
+            } catch (RemoteException e) {
+            } catch (NullPointerException npe) {
             }
             mNotification = null;
         }
@@ -735,6 +735,7 @@ public class ActiveDisplayView extends FrameLayout {
             mNotification = getNextAvailableNotification();
             if (mNotification != null) {
                 setActiveNotification(mNotification, true);
+                inflateRemoteView(mNotification);
                 invalidate();
                 mGlowPadView.ping();
                 isUserActivity();
@@ -1103,10 +1104,11 @@ public class ActiveDisplayView extends FrameLayout {
                 mCurrentNotificationIcon.setImageDrawable(mNotificationDrawable);
                 setHandleText(sbn);
                 mNotification = sbn;
+             }
                 updateResources();
                 mGlowPadView.invalidate();
                 if (updateOthers) updateOtherNotifications();
-            }
+             }
         });
     }
 
