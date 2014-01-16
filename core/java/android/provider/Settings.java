@@ -3939,13 +3939,7 @@ public final class Settings {
         public static final String PIE_TRIGGER_HEIGHT = "pie_trigger_height";
 
         /**
-         * Pie trigger vertical gravity
-         * @hide
-         */
-        public static final String PIE_TRIGGER_GRAVITY_LEFT_RIGHT = "pie_trigger_gravity_left_right";
-
-        /**
-         * 
+		 *
          * Should Dialer suggest nearby phone numbers
          *
          * @hide
@@ -3953,7 +3947,22 @@ public final class Settings {
         public static final String ENABLE_DIALER_SUGGESTIONS = "enable_dialer_suggestions";
 
         /**
-         * Show pie trigger
+         * Should Dialer reverse look up names for unknown phone numbers
+         *
+         * @hide
+         */
+        public static final String ENABLE_DIALER_REVERSE_LOOKUP = "enable_dialer_reverse_lookup";
+
+        /**
+         * Pie trigger vertical gravity
+         *
+         * @hide
+         */
+        public static final String PIE_TRIGGER_GRAVITY_LEFT_RIGHT = "pie_trigger_gravity_left_right";
+
+        /**
+         * Pie trigger show
+         *
          * @hide
          */
         public static final String PIE_TRIGGER_SHOW = "pie_trigger_show";
