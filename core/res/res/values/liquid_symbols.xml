@@ -177,7 +177,7 @@
   <!-- Legacy USB manager -->
   <java-symbol type="string" name="config_legacyUmsLunFile" />
 
-  <!-- Force permanent menu key -->
-  <java-symbol type="bool" name="config_force_permanent_menu_key" />
+  <!-- Hardware key mapping -->
+  <java-symbol type="integer" name="config_deviceHardwareKeys" />
 
 </resources>
