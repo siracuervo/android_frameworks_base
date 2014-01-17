@@ -302,9 +302,7 @@ public class ViewConfiguration {
         if (!sHasPermanentMenuKeySet) {
             IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
             try {
-                sHasPermanentMenuKey = !wm.hasNavigationBar()
-                        || context.getResources().getBoolean(
-                                com.android.internal.R.bool.config_force_permanent_menu_key);
+                sHasPermanentMenuKey = !wm.hasNavigationBar();
                 sHasPermanentMenuKeySet = true;
             } catch (RemoteException ex) {
                 sHasPermanentMenuKey = false;
