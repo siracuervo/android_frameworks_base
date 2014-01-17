@@ -56,7 +56,6 @@ import com.android.internal.util.liquid.LockscreenTargetUtils;
 import com.android.internal.util.liquid.DeviceUtils;
 import com.android.internal.util.liquid.LiquidActions;
 
-import com.android.internal.util.liquid.liquidActions;
 import com.android.internal.util.liquid.TorchConstants;
 import com.android.internal.view.RotationPolicy;
 import com.android.internal.widget.LockPatternUtils;
