@@ -3753,14 +3753,8 @@ public final class Settings {
         public static final String CLEAR_RECENTS_POSITION = "clear_recents_position";
 
         /**
-         * Whether to enable custom rebindings of the actions performed on
-         * certain key press events.
-         * @hide
-         */
-        public static final String HARDWARE_KEY_REBINDING = "hardware_key_rebinding";
-
-        /**
-         * Action to perform when the home key is long-pressed. (Default is 2)
+         * Action to perform when the home key is long-pressed.
+         * (Default can be configured via config_longPressOnHomeBehavior)
          * 0 - Nothing
          * 1 - Menu
          * 2 - App-switch
@@ -3773,7 +3767,8 @@ public final class Settings {
         public static final String KEY_HOME_LONG_PRESS_ACTION = "key_home_long_press_action";
 
         /**
-         * Action to perform when the home key is double-tapped. (Default is 0)
+         * Action to perform when the home key is double-tapped.
+         * (Default can be configured via config_doubleTapOnHomeBehavior)
          * (See KEY_HOME_LONG_PRESS_ACTION for valid values)
          * @hide
          */
