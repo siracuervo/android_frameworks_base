@@ -23,6 +23,11 @@ import android.widget.ListView;
 
 import com.android.systemui.R;
 
+import java.lang.CharSequence;
+import java.lang.IllegalArgumentException;
+import java.lang.NumberFormatException;
+import java.lang.StringBuilder;
+
 public class CreateShortcut extends LauncherActivity {
 
     @Override
