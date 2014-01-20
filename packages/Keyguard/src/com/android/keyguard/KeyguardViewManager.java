@@ -370,12 +370,6 @@ public class KeyguardViewManager {
 
                 Drawable dd = new BitmapDrawable(b);
 
-                mTransitionBackground = new TransitionDrawable(new Drawable[]{old, dd});
-                mTransitionBackground.setCrossFadeEnabled(true);
-                setBackground(mTransitionBackground);
-
-                mTransitionBackground.startTransition(200);
-
                 mCustomBackground = dd;
                 invalidate();
             }
