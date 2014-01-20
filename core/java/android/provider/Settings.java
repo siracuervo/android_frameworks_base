@@ -3006,6 +3006,12 @@ public final class Settings {
         public static final String CUSTOM_TOGGLE_EXTRAS = "custom_toggle_extras";
 
         /**
+         * Contact strings for infinite toggles
+         * @hide
+         */
+        public static final String TILE_CONTACT_ACTIONS = "tile_contact_actions";
+
+        /**
          * Show icon when stylus is used?
          * 0 = no
          * 1 = yes
@@ -3037,6 +3043,20 @@ public final class Settings {
          * @hide
          */
         public static final String QS_QUICK_PULLDOWN = "qs_quick_pulldown";
+
+        /**
+         * Quick Settings Collapse Pane
+         *
+         * @hide
+         */
+        public static final String QS_COLLAPSE_PANEL = "qs_collapse_panel";
+
+        /**
+         * Quick Settings Smart Pulldown
+         *
+         * @hide
+         */
+        public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
 
         /**
          * Display style of the status bar battery information
@@ -3410,6 +3430,12 @@ public final class Settings {
          * @hide
          */
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
+
+        /**
+          * Always show the battery status on the lockscreen
+          * @hide
+          */
+        public static final String LOCKSCREEN_ALWAYS_SHOW_BATTERY = "lockscreen_always_show_battery";
 
         /**
          * Whether to use the custom quick unlock screen control
@@ -3911,7 +3937,8 @@ public final class Settings {
             QUIET_HOURS_END,
             QUIET_HOURS_MUTE,
             QUIET_HOURS_STILL,
-            QUIET_HOURS_DIM
+            QUIET_HOURS_DIM,
+            LOCKSCREEN_ALWAYS_SHOW_BATTERY
         };
 
         // Settings moved to Settings.Secure

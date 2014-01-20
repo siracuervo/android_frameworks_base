@@ -61,7 +61,6 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.util.Log;
 import android.util.Slog;
 import android.util.SparseArray;
-
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -84,42 +83,49 @@ public class KeyguardViewManager {
     private static String TAG = "KeyguardViewManager";
     public final static String IS_SWITCHING_USER = "is_switching_user";
 
-    // Delay dismissing keyguard to allow animations to complete.
+    // Delay dismissing keyguard to allow animations to complete
     private static final int HIDE_KEYGUARD_DELAY = 500;
-    private int mBlurRadius = 12;
-    private final int MAX_BLUR_WIDTH = 900;
-    private final int MAX_BLUR_HEIGHT = 1600;
 
-    // Timeout used for keypresses
+    // Timeout used for keypress
     static final int DIGIT_PRESS_WAKE_MILLIS = 5000;
 
-    private final Context mContext;    
-    private final KeyguardViewMediator.ViewMediatorCallback mViewMediatorCallback;
+    private static final int ROTATE_0 = 0;
+    private static final int ROTATE_90 = 1;
+    private static final int ROTATE_180 = 2;
+    private static final int ROTATE_270 = 3;
+
+    private final Context mContext;
     private final ViewManager mViewManager;
+    private final KeyguardViewMediator.ViewMediatorCallback mViewMediatorCallback;
 
-    private Bitmap mBlurredImage = null;
-    private Drawable mCustomBackground = null;
-    private KeyguardHostView mKeyguardView;    
-    private LockPatternUtils mLockPatternUtils;
-    private NotificationHostView mNotificationView;
-    private NotificationViewManager mNotificationViewManager;
-    private ViewManagerHost mKeyguardHost;
     private WindowManager.LayoutParams mWindowLayoutParams;
-
-    private boolean mLockscreenNotifications = true;
-    private boolean mIsCoverflow = true;
     private boolean mNeedsInput = false;
+
+    private ViewManagerHost mKeyguardHost;
+    private KeyguardHostView mKeyguardView;
+
+    private boolean mRotated = false;
     private boolean mScreenOn = false;
     private boolean mSeeThrough = false;
+    private boolean mIsCoverflow = true;
+    private LockPatternUtils mLockPatternUtils;
 
+    private NotificationHostView mNotificationView;
+    private NotificationViewManager mNotificationViewManager;
+    private boolean mLockscreenNotifications = true;
+
+    private int mBlurRadius = 12;
+    private int mLastRotation = 0;
+    private Bitmap mBlurredImage = null;
     private boolean mUnlockKeyDown = false;
 
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
         public void onSetBackground(Bitmap bmp) {
+            // album art album should override blurred background
             if (bmp != null) mBlurredImage = null;
             mIsCoverflow = true;
-            setCustomBackground (bmp);
+            setCustomBackground(bmp);
         }
     };
 
@@ -132,7 +138,7 @@ public class KeyguardViewManager {
             super(handler);
         }
 
-    void observe() {
+        void observe() {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);
@@ -142,7 +148,7 @@ public class KeyguardViewManager {
                     Settings.System.LOCKSCREEN_NOTIFICATIONS), false, this);
         }
 
-    @Override
+        @Override
         public void onChange(boolean selfChange) {
             updateSettings();
             if (mKeyguardHost == null) {
@@ -151,7 +157,7 @@ public class KeyguardViewManager {
             }
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
         }
-     }
+    }
 
     private void updateSettings() {
         mSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
@@ -160,10 +166,10 @@ public class KeyguardViewManager {
                 Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
         mLockscreenNotifications = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_NOTIFICATIONS, mLockscreenNotifications ? 1 : 0) == 1;
-        if(!mSeeThrough) mCustomBackground = null;
-        if(mLockscreenNotifications && mNotificationViewManager == null) {
+        if(!mSeeThrough) mBlurredImage = null;
+        if (mLockscreenNotifications && mNotificationViewManager == null) {
             mNotificationViewManager = new NotificationViewManager(mContext, this);
-        } else if(!mLockscreenNotifications && mNotificationViewManager != null) {
+        } else if (!mLockscreenNotifications && mNotificationViewManager != null) {
             mNotificationViewManager.unregisterListeners();
             mNotificationViewManager = null;
         }
@@ -235,16 +241,15 @@ public class KeyguardViewManager {
             && res.getBoolean(R.bool.config_enableTranslucentDecor);
     }
 
-     private void setCustomBackground(Bitmap bmp) {
-        mKeyguardHost.setCustomBackground( new BitmapDrawable(mContext.getResources(),
-                    bmp != null ? bmp : mBlurredImage) );
-        updateShowWallpaper(bmp == null && mBlurredImage == null);
+    private void setCustomBackground(Bitmap bmp) {
+        mKeyguardHost.setCustomBackground(bmp != null ?
+                    new BitmapDrawable(mContext.getResources(), bmp) : null);
+        updateShowWallpaper(bmp == null);
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-        if (bmp != null && mSeeThrough) {
-            mBlurredImage = mBlurRadius > 0 ? blurBitmap(bmp, mBlurRadius)
-                : bmp;
+        if (bmp != null && mSeeThrough && mBlurRadius > 0) {
+            mBlurredImage = blurBitmap(bmp, mBlurRadius);
         } else {
             mBlurredImage = null;
         }
@@ -278,7 +283,43 @@ public class KeyguardViewManager {
         private final Drawable mBackgroundDrawable = new Drawable() {
             @Override
             public void draw(Canvas canvas) {
-                drawToCanvas(canvas, mCustomBackground);
+                if (mCustomBackground != null) {
+                    if (!mRotated && mBlurredImage != null) {
+                        int rotation = mKeyguardView.getDisplay().getRotation();
+                        switch(rotation){
+                            case ROTATE_0:
+                            case ROTATE_90:
+                            case ROTATE_270:
+                                mBlurredImage = rotateBmp(mBlurredImage,
+                                                                mLastRotation - (rotation * 90));
+                                mLastRotation = rotation * 90;
+                                break;
+                            case ROTATE_180:
+                                mBlurredImage = rotateBmp(mBlurredImage,
+                                                                mLastRotation - (rotation * 180));
+                                mLastRotation = rotation * 180;
+                                break;
+                        }
+                        mRotated = true;
+                        setCustomBackground(new BitmapDrawable(mContext.getResources(),
+                                                mBlurredImage));
+                        updateShowWallpaper(false);
+                    } else {
+                        mRotated = false;
+                    }
+
+                    final Rect bounds = mCustomBackground.getBounds();
+                    final int vWidth = getWidth();
+                    final int vHeight = getHeight();
+
+                    final int restore = canvas.save();
+                    canvas.translate(-(bounds.width() - vWidth) / 2,
+                            -(bounds.height() - vHeight) / 2);
+                    mCustomBackground.draw(canvas);
+                    canvas.restoreToCount(restore);
+                } else {
+                    canvas.drawColor(BACKGROUND_COLOR, PorterDuff.Mode.SRC);
+                }
             }
 
             @Override
@@ -295,69 +336,43 @@ public class KeyguardViewManager {
             }
         };
 
-        private TransitionDrawable mTransitionBackground = null;
-
         public ViewManagerHost(Context context) {
             super(context);
             setBackground(mBackgroundDrawable);
         }
 
-        public void drawToCanvas(Canvas canvas, Drawable drawable) {
-            if (drawable != null) {
-                final Rect bounds = drawable.getBounds();
-                final int vWidth = getWidth();
-                final int vHeight = getHeight();
-
-                final int restore = canvas.save();
-                canvas.translate(-(bounds.width() - vWidth) / 2,
-                        -(bounds.height() - vHeight) / 2);
-                drawable.draw(canvas);
-                canvas.restoreToCount(restore);
-            } else {
-                canvas.drawColor(BACKGROUND_COLOR, PorterDuff.Mode.SRC);
-            }
-        }
-
         public void setCustomBackground(Drawable d) {
-            if (!ActivityManager.isHighEndGfx() || !mScreenOn) {
+            if (!ActivityManager.isHighEndGfx()) {
                 mCustomBackground = d;
                 if (d != null) {
                     d.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.SRC_OVER);
                 }
                 computeCustomBackgroundBounds(mCustomBackground);
-                setBackground(mBackgroundDrawable);
+                invalidate();
             } else {
-                Drawable old = mCustomBackground;
-                if (old == null && d == null) {
+                if (d == null) {
+                    mCustomBackground = null;
+                    setBackground(mBackgroundDrawable);
                     return;
                 }
-                boolean newIsNull = false;
+                Drawable old = mCustomBackground;
                 if (old == null) {
-                    old = new ColorDrawable(BACKGROUND_COLOR);
+                    old = new ColorDrawable(0);
+                    computeCustomBackgroundBounds(old);
                 }
-                if (d == null) {
-                    d = new ColorDrawable(BACKGROUND_COLOR);
-                    newIsNull = true;
-                } else {
-                    d.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.SRC_OVER);
-                }
+
+                d.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.SRC_OVER);
+                mCustomBackground = d;
                 computeCustomBackgroundBounds(d);
                 Bitmap b = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
                 Canvas c = new Canvas(b);
-                drawToCanvas(c, d);
+                mBackgroundDrawable.draw(c);
 
-                Drawable dd = new BitmapDrawable(mContext.getResources(), b);
+                Drawable dd = new BitmapDrawable(b);
 
-                mTransitionBackground = new TransitionDrawable(new Drawable[] {old, dd});
-                mTransitionBackground.setCrossFadeEnabled(true);
-                setBackground(mTransitionBackground);
-
-                mTransitionBackground.startTransition(200);
-
-                mCustomBackground = newIsNull ? null : dd;
-
+                mCustomBackground = dd;
+                invalidate();
             }
-            invalidate();
         }
 
         private void computeCustomBackgroundBounds(Drawable background) {
@@ -414,6 +429,8 @@ public class KeyguardViewManager {
                     }
                 } else if (action == KeyEvent.ACTION_UP) {
                     if (handleKeyUp(keyCode, event)) {
+                        return true;
+                    } else if (keyCode == KeyEvent.KEYCODE_HOME && mKeyguardView.handleHomeKey()) {
                         return true;
                     }
                 }
@@ -574,7 +591,7 @@ public class KeyguardViewManager {
     }
 
     SparseArray<Parcelable> mStateContainer = new SparseArray<Parcelable>();
-    int mLastRotation = 0;
+
     private void maybeCreateKeyguardLocked(boolean enableScreenRotation, boolean force,
             Bundle options) {
         if (mKeyguardHost != null) {
@@ -618,19 +635,23 @@ public class KeyguardViewManager {
             KeyguardUpdateMonitor.getInstance(mContext).registerCallback(mBackgroundChanger);
         }
 
-      if (force || mKeyguardView == null) {
+        if (force || mKeyguardView == null) {
             mKeyguardHost.setCustomBackground(null);
             mKeyguardHost.removeAllViews();
             inflateKeyguardView(options);
             mKeyguardView.requestFocus();
         }
 
-        if(mBlurredImage != null) {
-            int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
-            mBlurredImage = rotateBmp(mBlurredImage, mLastRotation - currentRotation);
-            mLastRotation = currentRotation;
-            mIsCoverflow = false;
-            setCustomBackground(mBlurredImage);
+        if (mBlurredImage != null || (mSeeThrough && mBlurRadius == 0)) {
+            if (mBlurredImage != null) {
+                int currentRotation = mKeyguardView.getDisplay().getRotation() * 90;
+                mBlurredImage = rotateBmp(mBlurredImage, mLastRotation - currentRotation);
+                mLastRotation = currentRotation;
+                mIsCoverflow = false;
+                setCustomBackground(mBlurredImage);
+            } else {
+                updateShowWallpaper(false);
+            }
         } else {
             mIsCoverflow = true;
         }
@@ -652,7 +673,6 @@ public class KeyguardViewManager {
         if (v != null) {
             mKeyguardHost.removeView(v);
         }
-
         final LayoutInflater inflater = LayoutInflater.from(mContext);
         View view = inflater.inflate(R.layout.keyguard_host_view, mKeyguardHost, true);
         mKeyguardView = (KeyguardHostView) view.findViewById(R.id.keyguard_host_view);
@@ -724,14 +744,12 @@ public class KeyguardViewManager {
     }
 
     void updateShowWallpaper(boolean show) {
-        if (mSeeThrough) show =false;
-           if (show) {
-                mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            } else {
-                mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-            }
-
-            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+        if (show) {
+            mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+        } else {
+            mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+        }
+        mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
     public void setNeedsInput(boolean needsInput) {
@@ -812,17 +830,16 @@ public class KeyguardViewManager {
                         Slog.w(TAG, "Exception calling onShown():", e);
                     }
                 }
-
-            if (mLockscreenNotifications) {
-                mNotificationViewManager.onScreenTurnedOn();
             }
-          }
         } else if (callback != null) {
             try {
                 callback.onShown(token);
             } catch (RemoteException e) {
                 Slog.w(TAG, "Exception calling onShown():", e);
             }
+        }
+        if (mLockscreenNotifications) {
+            mNotificationViewManager.onScreenTurnedOn();
         }
     }
 
