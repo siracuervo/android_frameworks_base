@@ -51,6 +51,9 @@
   <java-symbol type="string" name="reboot_progress" />
   <java-symbol type="string" name="reboot_system" />
 
+  <!-- Hardware keys -->
+  <java-symbol type="integer" name="config_deviceHardwareKeys" />
+
   <!-- Telephony -->
   <java-symbol type="bool" name="config_samsung_stk" />
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
@@ -176,9 +179,6 @@
 
   <!-- Legacy USB manager -->
   <java-symbol type="string" name="config_legacyUmsLunFile" />
-
-  <!-- Force permanent menu key -->
-  <java-symbol type="bool" name="config_force_permanent_menu_key" />
 
   <!-- Force permanent menu key -->
   <java-symbol type="bool" name="config_force_permanent_menu_key" />
