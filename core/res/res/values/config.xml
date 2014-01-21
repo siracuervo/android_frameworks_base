@@ -1410,5 +1410,9 @@
     <!-- Indicates that the device has Single-stage Camera key
          (without "Focus" state) instead of Dual-stage. -->
     <bool name="config_singleStageCameraKey">false</bool>
+    
+    <!-- Performance profiles THIS IS A DUMMY SO WE CAN TRACK COMMON REPOS UPSTREAM -->
+    <string name="config_perf_profile_prop">sys.perf.profile</string>
+    <string name="config_perf_profile_default_entry">1</string>
 
 </resources>
