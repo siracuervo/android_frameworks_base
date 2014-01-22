@@ -233,7 +233,7 @@
             </intent-filter>
         </activity>
 
-      <!-- Shortcut picker -->
+        <!-- Shortcut picker -->
         <activity
             android:name="com.android.systemui.CreateShortcut"
             android:label="@string/shortcut_picker"
