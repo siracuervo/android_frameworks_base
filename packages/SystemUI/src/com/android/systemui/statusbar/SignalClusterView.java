@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.policy.NetworkController;
+import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 // Intimately tied to the design of res/layout/signal_cluster_view.xml
 public class SignalClusterView
@@ -54,6 +55,7 @@ public class SignalClusterView
     private boolean mIsAirplaneMode = false;
     private int mAirplaneIconId = 0;
     private String mWifiDescription, mMobileDescription, mMobileTypeDescription;
+    private PhoneStatusBar mStatusBar;
 
     ViewGroup mWifiGroup, mMobileGroup;
     ImageView mWifi, mMobile, mWifiActivity, mMobileActivity, mMobileType, mAirplane;
@@ -102,6 +104,10 @@ public class SignalClusterView
         if (DEBUG) Log.d(TAG, "NetworkController=" + nc);
         mNC = nc;
     }
+   
+    public void setStatusBar(PhoneStatusBar mStatusBar) {
+        this.mStatusBar = mStatusBar;
+    }
 
     @Override
     protected void onAttachedToWindow() {
@@ -120,6 +126,13 @@ public class SignalClusterView
         mAirplane       = (ImageView) findViewById(R.id.airplane);
 
         apply();
+        
+        mStatusBar.addIcon(mWifi);
+		mStatusBar.addIcon(mMobile);
+		mStatusBar.addIcon(mWifiActivity);
+		mStatusBar.addIcon(mMobileActivity); 
+		mStatusBar.addIcon(mMobileType); 
+		mStatusBar.addIcon(mAirplane);
     }
 
     @Override
