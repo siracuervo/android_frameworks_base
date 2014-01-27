@@ -17,7 +17,6 @@
 package android.view;
 
 import android.app.AppGlobals;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -228,6 +227,8 @@ public class ViewConfiguration {
     private final int mOverflingDistance;
     private final boolean mFadingMarqueeEnabled;
 
+    private Context mContext;
+
     static final SparseArray<ViewConfiguration> sConfigurations =
             new SparseArray<ViewConfiguration>(2);
 
@@ -292,6 +293,16 @@ public class ViewConfiguration {
 
         mOverscrollDistance = (int) (sizeAndDensity * OVERSCROLL_DISTANCE + 0.5f);
         mOverflingDistance = (int) (sizeAndDensity * OVERFLING_DISTANCE + 0.5f);
+
+        if (!sHasPermanentMenuKeySet) {
+            IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
+            try {
+                sHasPermanentMenuKey = !wm.hasNavigationBar();
+                sHasPermanentMenuKeySet = true;
+            } catch (RemoteException ex) {
+                sHasPermanentMenuKey = false;
+            }
+        }
 
         mFadingMarqueeEnabled = res.getBoolean(
                 com.android.internal.R.bool.config_ui_enableFadingMarquee);
@@ -684,21 +695,17 @@ public class ViewConfiguration {
      * @return true if a permanent menu key is present, false otherwise.
      */
     public boolean hasPermanentMenuKey() {
-        IWindowManager wm = WindowManagerGlobal.getWindowManagerService();
-        // Report no menu key if device has soft buttons
-        try {
-            if (wm.hasNavigationBar()) {
-                return false;
-            }
-        } catch (RemoteException ex) {
-            // do nothing, continue trying to guess
-        }
-
-        // Report menu key presence based on hardware key rebinding
-        try {
-            return wm.hasMenuKeyEnabled();
-        } catch (RemoteException ex) {
-            return true;
+        // The action overflow button within app UI can
+        // be controlled with a system setting
+        int showOverflowButton = Settings.System.getInt(
+                mContext.getContentResolver(),
+                Settings.System.UI_FORCE_OVERFLOW_BUTTON, 0);
+        if (showOverflowButton == 1) {
+            // Force overflow button on by reporting that
+            // the device has no permanent menu key
+            return false;
+        } else {
+            return sHasPermanentMenuKey;
         }
     }
 

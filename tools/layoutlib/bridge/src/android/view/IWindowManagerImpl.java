@@ -518,9 +518,4 @@ public class IWindowManagerImpl implements IWindowManager {
     @Override
     public int getCurrentNavigationBarSize() {
     }
-
-    @Override
-    public boolean hasMenuKeyEnabled() {
-        return true;
-    }
 }
