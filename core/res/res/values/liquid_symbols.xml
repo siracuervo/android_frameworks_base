@@ -180,10 +180,6 @@
   <!-- Hardware key mapping -->
   <java-symbol type="integer" name="config_deviceHardwareKeys" />
 
-  <!-- Hardware key handlers -->
-  <java-symbol type="string" name="config_deviceKeyHandlerLib" />
-  <java-symbol type="string" name="config_deviceKeyHandlerClass" />
-
   <!-- Force permanent menu key -->
   <java-symbol type="bool" name="config_force_permanent_menu_key" />
 
