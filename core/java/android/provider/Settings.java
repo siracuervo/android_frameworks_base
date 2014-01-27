@@ -2869,12 +2869,6 @@ public final class Settings {
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
         /**
-         * Whether to wake the screen with the home key, the value is boolean.
-         * @hide
-         */
-        public static final String HOME_WAKE_SCREEN = "home_wake_screen";
-
-        /**
          * Volume rocker wake
          * @hide
          */

@@ -358,25 +358,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     WindowState mFocusedWindow;
     IApplicationToken mFocusedApp;
 
-    // Behavior of home wake
-    boolean mHomeWakeScreen;
-
-    // Behavior of volume wake
-    boolean mVolumeWakeScreen;
-
-    // Behavior of volbtn music controls
-    boolean mVolBtnMusicControls;
-    boolean mIsLongPress;
-
-    private static final class PointerLocationInputEventReceiver extends InputEventReceiver {
-        private final PointerLocationView mView;
-
-        public PointerLocationInputEventReceiver(InputChannel inputChannel, Looper looper,
-                PointerLocationView view) {
-            super(inputChannel, looper);
-            mView = view;
-        }
-
+    private final class PointerLocationPointerEventListener implements PointerEventListener {
         @Override
         public void onPointerEvent(MotionEvent motionEvent) {
             if (mPointerLocationView != null) {
@@ -617,9 +599,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR), false, this,
-                    UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.HOME_WAKE_SCREEN), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.ACCELEROMETER_ROTATION), false, this,
@@ -1404,8 +1383,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR,
                     Settings.Secure.RING_HOME_BUTTON_BEHAVIOR_DEFAULT,
                     UserHandle.USER_CURRENT);
-            mHomeWakeScreen = (Settings.System.getIntForUser(resolver,
-                    Settings.System.HOME_WAKE_SCREEN, 1, UserHandle.USER_CURRENT) == 1);
 
             boolean keyRebindingEnabled = Settings.System.getInt(resolver,
                     Settings.System.HARDWARE_KEY_REBINDING, 0) == 1;
@@ -4483,17 +4460,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
                 break;
             }
-            case KeyEvent.KEYCODE_HOME:
-                if (down && !isScreenOn && mHomeWakeScreen) {
-                    if (keyguardActive) {
-                        // If the keyguard is showing, let it wake the device when ready.
-                        mKeyguardMediator.onWakeKeyWhenKeyguardShowingTq(keyCode);
-                    } else {
-                        // Otherwise, wake the device ourselves.
-                        result |= ACTION_WAKE_UP;
-                    }
-                }
-                break;
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE: {
@@ -4755,10 +4721,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
             case KeyEvent.KEYCODE_MEDIA_AUDIO_TRACK:
             case KeyEvent.KEYCODE_CAMERA:
-                return false;
-
-            // home wake can be configurable so default to no here
-            case KeyEvent.KEYCODE_HOME:
                 return false;
         }
         return true;
