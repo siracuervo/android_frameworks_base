@@ -3626,6 +3626,12 @@ public final class Settings {
         public static final String KEY_APP_SWITCH_DOUBLE_TAP_ACTION =
                 "key_app_switch_double_tap_action";
 
+        /**
+         * Whether to unlock the screen with the home key.  The value is boolean (1 or 0).
+         * @hide
+         */
+        public static final String HOME_UNLOCK_SCREEN = "home_unlock_screen";
+
 	    /**
          * Whether to display notifications on screen when screen is off
          * @hide
