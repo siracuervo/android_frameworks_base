@@ -46,7 +46,7 @@ public class PlatLogoActivity extends Activity {
     int mCount;
     private boolean mIsLiquid;
     final Handler mHandler = new Handler();
-    static final int BGCOLOR = 0xffed1d24;
+    static final int BGCOLOR = 0x000000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,7 @@ public class PlatLogoActivity extends Activity {
         letter.setTextSize(300);
         letter.setTextColor(0xFFFFFFFF);
         letter.setGravity(Gravity.CENTER);
-        letter.setText(String.valueOf(Build.ID).substring(0, 1));
+        letter.setText(mIsCM ? "LS" : "LS");
 
         final int p = (int)(4 * metrics.density);
 
