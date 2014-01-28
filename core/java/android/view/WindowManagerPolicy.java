@@ -1248,4 +1248,10 @@ public interface WindowManagerPolicy {
      */
     public void updateSettings();
 
+    /**
+     * Toggle global menu
+     *
+     * @hide
+     */
+    public void toggleGlobalMenu();
 }
