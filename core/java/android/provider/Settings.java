@@ -3135,35 +3135,6 @@ public final class Settings {
         public static final String ANIMATION_CONTROLS_NO_OVERRIDE = "animation_controls_no_override";
 
         /**
-         * ListView Animations
-         * 0 == None
-         * 1 == Wave (Left)
-         * 2 == Wave (Right)
-         * 3 == Scale
-         * 4 == Alpha
-         * 5 == Stack (Top)
-         * 6 == Stack (Bottom)
-         * 7 == Translate (Left)
-         * 8 == Translate (Right)
-         * @hide
-         */
-        public static final String LISTVIEW_ANIMATION = "listview_animation";
-
-        /**
-         * ListView Interpolators
-         * 0 == None
-         * 1 == accelerate_interpolator
-         * 2 == decelerate_interpolator
-         * 3 == accelerate_decelerate_interpolator
-         * 4 == anticipate_interpolator
-         * 5 == overshoot_interpolator
-         * 6 == anticipate_overshoot_interpolator
-         * 7 == bounce_interpolator
-         * @hide
-         */
-        public static final String LISTVIEW_INTERPOLATOR = "listview_interpolator";
-
-        /**
          * MediaScanner behavior on boot.
          * 0 = enabled
          * 1 = ask (notification)
@@ -3233,8 +3204,8 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_HEIGHT = "lockscreen_notifications_height";
 
-       /**
-          * Changes the offset of the notifications to the top of the screen
+        /**
+         * Changes the offset of the notifications to the top of the screen
          * @hide
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_OFFSET_TOP = "lockscreen_notifications_offset_top";
@@ -3245,17 +3216,16 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE = "lockscreen_notifications_privacy_mode";
   
-
         /**
          * Sets the portrait background of notification drawer
          * @hide
          */
         public static final String NOTIFICATION_BACKGROUND = "notification_background";
 
-       /**
-        * Sets the landscape background of notification drawer
-        * @hide
-        */
+        /**
+         * Sets the landscape background of notification drawer
+         * @hide
+         */
         public static final String NOTIFICATION_BACKGROUND_LANDSCAPE =
                 "notification_background_landscape";
 
@@ -3441,9 +3411,9 @@ public final class Settings {
         public static final String QUIET_HOURS_DIM = "quiet_hours_dim";
 
         /**
-          * Always show the battery status on the lockscreen
-          * @hide
-          */
+         * Always show the battery status on the lockscreen
+         * @hide
+         */
         public static final String LOCKSCREEN_ALWAYS_SHOW_BATTERY = "lockscreen_always_show_battery";
 
         /**
