@@ -695,6 +695,7 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     @Override
+<<<<<<< HEAD
     public void toggleScreenshot() {
         int msg = MSG_TOGGLE_SCREENSHOT;
         mHandler.removeMessages(msg);
@@ -722,6 +723,9 @@ public abstract class BaseStatusBar extends SystemUI implements
         mHandler.obtainMessage(MSG_SET_PIE_TRIGGER_MASK,
                 newMask, lock ? 1 : 0, null).sendToTarget();
     }
+
+    @Override
+    public void setButtonDrawable(int buttonId, int iconId) {}
 
     protected abstract WindowManager.LayoutParams getSearchLayoutParams(
             LayoutParams layoutParams);

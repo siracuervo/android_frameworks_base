@@ -114,6 +114,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     int mNavigationIconHints = 0;
 
     private Drawable mBackIcon, mBackAltIcon;
+    private Drawable mRecentAltIcon, mRecentAltLandIcon;
 
     protected DelegateViewHelper mDelegateHelper;
     private DeadZone mDeadZone;
@@ -683,7 +684,20 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         setDisabledFlags(mDisabledFlags, true);
     }
 
-    @Override
+    public void setButtonDrawable(int buttonId, final int iconId) {
+        final ImageView iv = (ImageView)getNotifsButton();
+        mRecentAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
+        mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
+
+        mHandler.post(new Runnable() {
+            public void run() {
+                if (iconId == 1) iv.setImageResource(R.drawable.search_light_land);
+                else iv.setImageDrawable(mVertical ? mRecentAltLandIcon : mRecentAltIcon);
+                setVisibleOrGone(getNotifsButton(), iconId != 0);
+            }
+        });
+    }
+
     public void setDisabledFlags(int disabledFlags) {
         setDisabledFlags(disabledFlags, false);
     }
@@ -753,11 +767,12 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
         final boolean showSearch = disableHome && !disableSearch;
         final boolean showNotifs = showSearch &&
-            Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS, 1) == 1
-            && Settings.System.getInt(mContext.getContentResolver(),
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, 0) == 0;
-        setVisibleOrGone(getNotifsButton(), showNotifs);
+                Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_NOTIFICATIONS, 1) == 1 &&
+                Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, 0) == 0;
+
+        if (!showNotifs) setVisibleOrGone(getNotifsButton(), showNotifs);
 
         mBarTransitions.applyBackButtonQuiescentAlpha(mBarTransitions.getMode(), true /*animate*/);
 
