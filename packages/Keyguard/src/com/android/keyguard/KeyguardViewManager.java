@@ -805,7 +805,6 @@ public class KeyguardViewManager {
                 Slog.w(TAG, "Exception calling onShown():", e);
             }
         }
-
         if (mLockscreenNotifications) {
             mNotificationViewManager.onScreenTurnedOn();
         }
