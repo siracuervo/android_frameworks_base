@@ -3810,13 +3810,6 @@ public final class Settings {
         public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
 
         /**
-         * Holds the text for the Carrier label. An empty string
-         * will bring the default text back.
-         * @hide
-         */
-        public static final String CUSTOM_CARRIER_LABEL = "custom_carrier_label";
-
-        /**
          * Allows to show the background activity back the lockscreen
          * @hide
          */
