@@ -95,11 +95,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TabHost;
-import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
 import com.android.internal.statusbar.StatusBarIcon;
@@ -270,6 +267,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mHideLabels;
     private boolean mCarrierAndWifiViewBlocked = false;
 
+    private boolean mRecreating = false;
+
     // position
     int[] mPositionTmp = new int[2];
     boolean mExpandedVisible;
@@ -304,6 +303,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private int mCloseViewHeight;
 
     // ticker
+    private Ticker mTicker;
     private View mTickerView;
     private boolean mTicking;
 
@@ -328,8 +328,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     // last theme that was applied in order to detect theme change (as opposed
     // to some other configuration change).
     CustomTheme mCurrentTheme;
-
-    private boolean mRecreating = false;
 
     // for disabling the status bar
     int mDisabled = 0;
@@ -1706,7 +1704,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-
     protected void updateNotificationShortcutsVisibility(boolean vis, boolean instant) {
         if (mNotificationShortcutsScrollView == null) {
             return;
@@ -2834,8 +2831,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         @Override
         public void run() {
             checkBarModes();
-        }
-    };
+        }};
 
     @Override
     public void setInteracting(int barWindow, boolean interacting) {
@@ -3150,6 +3146,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private void addStatusBarWindow() {
         // Put up the view
         final int height = getStatusBarHeight();
+
         // Now that the status bar window encompasses the sliding panel and its
         // translucent backdrop, the entire thing is made TRANSLUCENT and is
         // hardware-accelerated.
