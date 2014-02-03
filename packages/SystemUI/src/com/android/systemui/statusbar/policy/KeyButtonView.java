@@ -96,7 +96,6 @@ public class KeyButtonView extends ImageView {
         mGlowBG = a.getDrawable(R.styleable.KeyButtonView_glowBackground);
         setDrawingAlpha(mButtonAlpha);
         if (mGlowBG != null) {
-            setDrawingAlpha(mButtonAlpha);
             mGlowWidth = mGlowBG.getIntrinsicWidth();
             mGlowHeight = mGlowBG.getIntrinsicHeight();
         }
@@ -260,7 +259,7 @@ public class KeyButtonView extends ImageView {
                     as.playTogether(
                         ObjectAnimator.ofFloat(this, "glowAlpha", 0f),
                         ObjectAnimator.ofFloat(this, "glowScale", 1f),
-                        ObjectAnimator.ofFloat(this, "drawingAlpha", mButtonAlpha)
+                        mAnimateToQuiescent
                     );
                     as.setDuration(500);
                 }
