@@ -642,7 +642,6 @@ public class ActiveDisplayView extends FrameLayout {
         }
     }
 
-    private synchronized void handleHideNotificationView() {
     private void enabledKeyguard() {
         if (mKeyguardLock != null) {
             mKeyguardLock.reenableKeyguard();
