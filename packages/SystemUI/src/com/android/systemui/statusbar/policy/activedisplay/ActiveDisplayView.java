@@ -1101,6 +1101,7 @@ public class ActiveDisplayView extends FrameLayout {
         post(new Runnable() {
             @Override
             public void run() {
+                if (mNotificationDrawable != null) {
                 mCurrentNotificationIcon.setImageDrawable(mNotificationDrawable);
                 setHandleText(sbn);
                 mNotification = sbn;
