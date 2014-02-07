@@ -3911,12 +3911,6 @@ public final class Settings {
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
 
         /**
-         * Choose position of clear button on recents window
-         * @hide
-         */
-        public static final String CLEAR_RECENTS_POSITION = "clear_recents_position";
-
-        /**
          * Whether to enable pie controls
          * The value is 1, 2 or 0).
          * Default: 0
