@@ -253,19 +253,19 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
 
-	    int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
+	        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
             holder.thumbnailView.setTag(td);
             holder.thumbnailView.setOnLongClickListener(new OnLongClickDelegate(convertView));
 
-	    if(mHaloEnabled != 1){
-		    holder.thumbnailView.setOnTouchListener(new OnTouchListener() {
-		        @Override
-		        public boolean onTouch(View v, MotionEvent m) {
-		            return handleThumbnailTouch(m, holder.thumbnailView);
-		        }
-		    });
-	    }
+	        if(mHaloEnabled != 1){
+		        holder.thumbnailView.setOnTouchListener(new OnTouchListener() {
+		            @Override
+		            public boolean onTouch(View v, MotionEvent m) {
+		                return handleThumbnailTouch(m, holder.thumbnailView);
+		            }
+		        });
+	        }
             holder.taskDescription = td;
             return convertView;
         }
@@ -389,7 +389,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 mClearRecents.setVisibility(noApps ? View.GONE : View.VISIBLE);
                 int clearAllButtonLocation = Settings.System.getInt(mContext.getContentResolver(), Settings.System.CLEAR_RECENTS_BUTTON_LOCATION, Constants.CLEAR_ALL_BUTTON_BOTTOM_LEFT);
                 FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams)mClearRecents.getLayoutParams();
-               switch (clearAllButtonLocation) {
+                switch (clearAllButtonLocation) {
                     case Constants.CLEAR_ALL_BUTTON_TOP_LEFT:
                         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
                         break;
@@ -810,22 +810,21 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         if (ad.taskId >= 0) {
             // This is an active task; it should just go to the foreground.
 
-	    int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
+	        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
-            // If that task was split viewed, a normal press wil resume it to
-            // normal fullscreen view
-	    if(mHaloEnabled != 1){
-		    IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
-		    try {
-		        if (DEBUG) Log.v(TAG, "Restoring window full screen after split, because of normal tap");
-		        wm.setTaskSplitView(ad.taskId, false);
-		    } catch (RemoteException e) {
-		        Log.e(TAG, "Could not setTaskSplitView to fullscreen", e);
-		    }
-	    }
+                // If that task was split viewed, a normal press wil resume it to
+                // normal fullscreen view
+	        if(mHaloEnabled != 1){
+		        IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
+		        try {
+		            if (DEBUG) Log.v(TAG, "Restoring window full screen after split, because of normal tap");
+		            wm.setTaskSplitView(ad.taskId, false);
+		        } catch (RemoteException e) {
+		            Log.e(TAG, "Could not setTaskSplitView to fullscreen", e);
+		        }
+	        }
             am.moveTaskToFront(ad.taskId, ActivityManager.MOVE_TASK_WITH_HOME,
                     opts);
-	    
         } else {
             Intent intent = ad.intent;
             intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY
@@ -995,7 +994,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
-		int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
+		        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
                 if (item.getItemId() == R.id.recent_remove_item) {
                     ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
