@@ -3908,7 +3908,13 @@ public final class Settings {
         public static final String CLEAR_RECENTS_BUTTON_LOCATION = "clear_recents_button_location";
 
         /**
-         *  TeloRadio Low power network
+         * Allows to show the background activity back the lockscreen
+         * @hide
+         */
+        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
+
+        /**
+         * TeloRadio Low power network
          * @hide
          */
         public static final String TELO_RADIO_LOW_POWER = "telo_radio_low_power";
