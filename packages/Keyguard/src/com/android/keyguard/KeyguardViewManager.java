@@ -24,6 +24,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.os.*;
 import android.view.*;
+
 import com.android.internal.policy.IKeyguardShowCallback;
 import com.android.internal.widget.LockPatternUtils;
 
@@ -81,7 +82,9 @@ public class KeyguardViewManager {
     private final static boolean DEBUG = KeyguardViewMediator.DEBUG;
     private static String TAG = "KeyguardViewManager";
     public final static String IS_SWITCHING_USER = "is_switching_user";
-    private final int BLUR_RADIUS = 14;
+
+    // Delay dismissing keyguard to allow animations to complete.
+    private static final int HIDE_KEYGUARD_DELAY = 500;
 
     // Timeout used for keypresses
     static final int DIGIT_PRESS_WAKE_MILLIS = 5000;
@@ -99,6 +102,8 @@ public class KeyguardViewManager {
     private boolean mScreenOn = false;
     private LockPatternUtils mLockPatternUtils;
     private Drawable mCustomBackground = null;
+    private boolean mSeeThrough = false;
+    private int mBlurRadius = 14;
 
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
@@ -122,14 +127,24 @@ public class KeyguardViewManager {
             ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);
+            resolver.registerContentObserver(Settings.System.getUriFor(
+                    Settings.System.LOCKSCREEN_BLUR_RADIUS), false, this);
         }
 
         @Override
         public void onChange(boolean selfChange) {
+            updateSettings();
             setKeyguardParams();
-            if(!isSeeThroughEnabled()) mCustomBackground = null;
             mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
         }
+    }
+
+    private void updateSettings() {
+        mSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_SEE_THROUGH) == 1;
+        mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
+        if(!mSeeThrough) mCustomBackground = null;
     }
 
     /**
@@ -148,7 +163,8 @@ public class KeyguardViewManager {
 
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
-        if(!isSeeThroughEnabled()) mCustomBackground = null;
+
+        updateSettings();
     }
 
     /**
@@ -188,7 +204,7 @@ public class KeyguardViewManager {
                     | WindowManager.LayoutParams.FLAG_LAYOUT_INSET_DECOR
                     | WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN;
 
-            if (!isSeeThroughEnabled()) {
+            if (!mSeeThrough) {
                 flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
             }
 
@@ -233,8 +249,8 @@ public class KeyguardViewManager {
     }
 
     public void setBackgroundBitmap(Bitmap bmp) {
-        if (isSeeThroughEnabled()) {
-                bmp = blurBitmap(bmp, BLUR_RADIUS);
+        if (mSeeThrough) {
+                bmp = blurBitmap(bmp, mBlurRadius);
         }
         mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
     }
@@ -668,13 +684,8 @@ public class KeyguardViewManager {
         mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
     }
 
-    private boolean isSeeThroughEnabled() {
-        return Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
-    }
-
     void updateShowWallpaper(boolean show) {
-        if (isSeeThroughEnabled()) {
+        if (mSeeThrough) {
             return;
         } else {
             if (show) {
@@ -806,9 +817,10 @@ public class KeyguardViewManager {
                             mKeyguardHost.setCustomBackground(null);
                             updateShowWallpaper(true);
                             mKeyguardHost.removeView(lastView);
+                            mViewMediatorCallback.keyguardGone();
                         }
                     }
-                }, 500);
+                }, HIDE_KEYGUARD_DELAY);
             }
         }
     }
