@@ -103,7 +103,6 @@ public class KeyguardViewManager {
     private LockPatternUtils mLockPatternUtils;
     private Drawable mCustomBackground = null;
     private boolean mSeeThrough = false;
-    private int mBlurRadius = 14;
 
     private KeyguardUpdateMonitorCallback mBackgroundChanger = new KeyguardUpdateMonitorCallback() {
         @Override
@@ -141,9 +140,7 @@ public class KeyguardViewManager {
 
     private void updateSettings() {
         mSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_SEE_THROUGH) == 1;
-        mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
+                Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
         if(!mSeeThrough) mCustomBackground = null;
     }
 
@@ -163,7 +160,6 @@ public class KeyguardViewManager {
 
         SettingsObserver observer = new SettingsObserver(new Handler());
         observer.observe();
-
         updateSettings();
     }
 
@@ -603,10 +599,10 @@ public class KeyguardViewManager {
         }
 
         if (force || mKeyguardView == null) {
-                mKeyguardHost.setCustomBackground(null);
-                mKeyguardHost.removeAllViews();
-                inflateKeyguardView(options);
-                mKeyguardView.requestFocus();
+            mKeyguardHost.setCustomBackground(null);
+            mKeyguardHost.removeAllViews();
+            inflateKeyguardView(options);
+            mKeyguardView.requestFocus();
         }
 
             if(mCustomBackground != null) {
