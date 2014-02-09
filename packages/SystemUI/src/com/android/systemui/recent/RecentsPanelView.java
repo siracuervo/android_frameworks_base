@@ -568,7 +568,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 	    //mRecentsRamBar = findViewById(R.id.recents_ram_bar);
 
         mClearRecents = (ImageView) findViewById(R.id.recents_clear);
-        if (mClearRecents != null){
+        if (mClearRecents != null) {
             mClearRecents.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -576,6 +576,25 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             });
         }
+
+        mClearRecents.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
+                }
+
+                return true;
+            }
+        });
 
         if (mRecentsScrim != null) {
             mHighEndGfx = ActivityManager.isHighEndGfx();
