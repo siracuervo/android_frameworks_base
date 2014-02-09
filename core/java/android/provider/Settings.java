@@ -3758,12 +3758,6 @@ public final class Settings {
         public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
 
         /**
-         * Allows to show the background activity back the lockscreen
-         * @hide
-         */
-        public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
-
-        /**
          * Whether or not to show circle battery around the lockscreen ring
          * @hide
          */
@@ -3926,7 +3920,6 @@ public final class Settings {
         public static final String TELO_RADIO_HIGH_POWER = "telo_radio_high_power";
 
         /**
-         * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
          *
          * NOTE: Settings are backed up and restored in the order they appear
