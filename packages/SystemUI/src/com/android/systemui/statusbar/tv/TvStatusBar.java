@@ -58,7 +58,6 @@ public class TvStatusBar extends BaseStatusBar {
 
     @Override
     public void disable(int state) {
-        propagateDisabledFlags(state);
     }
 
     @Override
@@ -75,7 +74,6 @@ public class TvStatusBar extends BaseStatusBar {
 
     @Override
     public void topAppWindowChanged(boolean visible) {
-        propagateMenuVisibility(visible);
     }
 
     @Override
@@ -104,10 +102,6 @@ public class TvStatusBar extends BaseStatusBar {
 
     @Override // CommandQueue
     public void toggleQSShade() {
-    }
-
-    public void setNavigationIconHints(int hints) {
-        propagateNavigationIconHints(hints);
     }
 
     @Override
@@ -165,4 +159,5 @@ public class TvStatusBar extends BaseStatusBar {
     @Override
     protected void refreshLayout(int layoutDirection) {
     }
+
 }
