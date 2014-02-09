@@ -102,7 +102,7 @@ public class KeyguardViewManager {
     private LockPatternUtils mLockPatternUtils;
 
     private Bitmap mBlurredImage = null;
-    private Drawable mCustomBackground = null;
+
     private int mBlurRadius = 14;
     private boolean mSeeThrough = false;
 
@@ -125,29 +125,13 @@ public class KeyguardViewManager {
         void onShown(IBinder windowToken);
     };
 
-    class SettingsObserver extends ContentObserver {
-        SettingsObserver(Handler handler) {
-            super(handler);
-        }
-
-    void observe() {
-            ContentResolver resolver = mContext.getContentResolver();
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_SEE_THROUGH), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_BLUR_RADIUS), false, this);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.LOCKSCREEN_NOTIFICATIONS), false, this);
-        }
-    }
-
     private void updateSettings() {
         mSeeThrough = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_SEE_THROUGH, 0) == 1;
         mBlurRadius = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.LOCKSCREEN_BLUR_RADIUS, mBlurRadius);
         mLockscreenNotifications = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.LOCKSCREEN_NOTIFICATIONS, mLockscreenNotifications ? 1 : 0) == 1;
+                Settings.System.LOCKSCREEN_NOTIFICATIONS, 0) == 1;
         if(!mSeeThrough) mCustomBackground = null;
         if(mLockscreenNotifications && mNotificationViewManager == null) {
             mNotificationViewManager = new NotificationViewManager(mContext, this);
@@ -226,7 +210,26 @@ public class KeyguardViewManager {
         if (mSeeThrough) {
                 bmp = blurBitmap(bmp, mBlurRadius);
         }
-            mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
+        mCustomBackground = new BitmapDrawable(mContext.getResources(), bmp);
+        }
+    }
+
+    private Bitmap blurBitmap(Bitmap bmp, int radius) {
+        Bitmap out = Bitmap.createBitmap(bmp);
+        RenderScript rs = RenderScript.create(mContext);
+
+        Allocation input = Allocation.createFromBitmap(
+                rs, bmp, MipmapControl.MIPMAP_NONE, Allocation.USAGE_SCRIPT);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        script.setInput(input);
+        script.setRadius(radius);
+        script.forEach(output);
+
+        output.copyTo(out);
+
+        rs.destroy();
     }
 
     private Bitmap blurBitmap(Bitmap bmp, int radius) {
@@ -236,7 +239,7 @@ public class KeyguardViewManager {
         if (bmp.getWidth() > MAX_BLUR_WIDTH)
             tmpBmp = bmp.createScaledBitmap(bmp, MAX_BLUR_WIDTH, MAX_BLUR_HEIGHT, false);
 
-        Bitmap out = Bitmap.createBitmap(tmpBmp);
+        Bitmap out = Bitmap.createBitmap(bmp);
         RenderScript rs = RenderScript.create(mContext);
 
         Allocation input = Allocation.createFromBitmap(
@@ -360,6 +363,7 @@ public class KeyguardViewManager {
                 background.setBounds(0, 0, (int) (vHeight * bgAspect), vHeight);
             } else {
                 mCustomBackground.setBounds(0, 0, vWidth, (int) (vWidth * (vAspect >= 1 ? bgAspect : (1 / bgAspect))));
+                        (int) (vWidth * (vAspect >= 1 ? bgAspect : (1 / bgAspect))));
             }
         }
 
