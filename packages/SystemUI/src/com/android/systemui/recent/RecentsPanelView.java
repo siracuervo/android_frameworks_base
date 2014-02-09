@@ -111,6 +111,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
 
+    private int mDragPositionX;
+    private int mDragPositionY;
+
     private ImageView mClearRecents;
     private LinearColorBar mRamUsageBar;
 
