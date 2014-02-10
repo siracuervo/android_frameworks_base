@@ -3940,20 +3940,6 @@ public final class Settings {
         public static final String TELO_RADIO_GO3G_UNLOCK = "telo_radio_go_3g_unlock";
 
         /**
-         * Should Dialer suggest nearby phone numbers
-         *
-         * @hide
-         */
-        public static final String ENABLE_DIALER_SUGGESTIONS = "enable_dialer_suggestions";
-
-        /**
-         * Should Dialer reverse look up names for unknown phone numbers
-         *
-         * @hide
-         */
-        public static final String ENABLE_DIALER_REVERSE_LOOKUP = "enable_dialer_reverse_lookup";
-
-        /**
          * Whether to unlock the menu key.  The value is boolean (1 or 0).
          *
          * @hide
