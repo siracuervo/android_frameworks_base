@@ -112,6 +112,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     boolean mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
+    boolean mWasNotifsButtonVisible = false;
 
     private Drawable mBackIcon, mBackAltIcon;
 
@@ -356,6 +357,11 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     // shown when keyguard is visible and camera is available
     public View getCameraButton() {
         return mCurrentView.findViewById(R.id.camera_button);
+    }
+
+    // used for lockscreen notifications
+    public View getNotifsButton() {
+        return mCurrentView.findViewById(R.id.show_notifs);
     }
 
     @Override
@@ -671,6 +677,18 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         setDisabledFlags(mDisabledFlags, true);
     }
 
+    public void setButtonDrawable(int buttonId, final int iconId) {
+        final ImageView iv = (ImageView)getNotifsButton();
+        mHandler.post(new Runnable() {
+            public void run() {
+                if (iconId == 1) iv.setImageResource(R.drawable.search_light_land);
+                //else iv.setImageDrawable(mVertical ? mRecentAltLandIcon : mRecentAltIcon);
+                mWasNotifsButtonVisible = iconId != 0 && ((mDisabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0);
+                setVisibleOrGone(getNotifsButton(), mWasNotifsButtonVisible);
+            }
+        });
+    }
+
     @Override
     public void setDisabledFlags(int disabledFlags) {
         setDisabledFlags(disabledFlags, false);
@@ -729,6 +747,17 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         View searchLight = getSearchLight();
         if (searchLight != null) {
             setVisibleOrGone(searchLight, disableHome && !disableSearch);
+        }
+
+        final boolean showSearch = disableHome && !disableSearch;
+        final boolean showNotifs = showSearch &&
+                Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_NOTIFICATIONS, 1) == 1 &&
+                Settings.System.getInt(mContext.getContentResolver(),
+                        Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, 0) == 0;
+
+        if (!showNotifs) {
+            setVisibleOrGone(getNotifsButton(), showNotifs && mWasNotifsButtonVisible);
         }
 
         final boolean shouldShowCamera = disableHome
