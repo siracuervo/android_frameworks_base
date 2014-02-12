@@ -359,11 +359,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         return mCurrentView.findViewById(R.id.camera_button);
     }
 
-    // used for lockscreen notifications
-    public View getNotifsButton() {
-        return mCurrentView.findViewById(R.id.show_notifs);
-    }
-
     @Override
     public void setLayoutDirection(int layoutDirection) {
         updateSettings();
@@ -747,17 +742,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         View searchLight = getSearchLight();
         if (searchLight != null) {
             setVisibleOrGone(searchLight, disableHome && !disableSearch);
-        }
-
-        final boolean showSearch = disableHome && !disableSearch;
-        final boolean showNotifs = showSearch &&
-                Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.LOCKSCREEN_NOTIFICATIONS, 1) == 1 &&
-                Settings.System.getInt(mContext.getContentResolver(),
-                        Settings.System.LOCKSCREEN_NOTIFICATIONS_PRIVACY_MODE, 0) == 0;
-
-        if (!showNotifs) {
-            setVisibleOrGone(getNotifsButton(), showNotifs && mWasNotifsButtonVisible);
         }
 
         final boolean shouldShowCamera = disableHome
