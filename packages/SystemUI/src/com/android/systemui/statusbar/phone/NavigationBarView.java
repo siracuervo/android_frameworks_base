@@ -112,7 +112,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
     boolean mShowMenu;
     int mDisabledFlags = 0;
     int mNavigationIconHints = 0;
-    boolean mWasNotifsButtonVisible = false;
 
     private Drawable mBackIcon, mBackAltIcon;
 
@@ -670,18 +669,6 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         }
 
         setDisabledFlags(mDisabledFlags, true);
-    }
-
-    public void setButtonDrawable(int buttonId, final int iconId) {
-        final ImageView iv = (ImageView)getNotifsButton();
-        mHandler.post(new Runnable() {
-            public void run() {
-                if (iconId == 1) iv.setImageResource(R.drawable.search_light_land);
-                //else iv.setImageDrawable(mVertical ? mRecentAltLandIcon : mRecentAltIcon);
-                mWasNotifsButtonVisible = iconId != 0 && ((mDisabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0);
-                setVisibleOrGone(getNotifsButton(), mWasNotifsButtonVisible);
-            }
-        });
     }
 
     @Override

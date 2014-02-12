@@ -3108,7 +3108,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    @Override
     public void topAppWindowChanged(boolean showMenu) {
         if (DEBUG) {
             Log.d(TAG, (showMenu?"showing":"hiding") + " the MENU button");
@@ -3946,10 +3945,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         if (false) Log.v(TAG, "updateResources");
     }
 
-    @Override
-    public void setButtonDrawable(int buttonId, int iconId) {
-        mNavigationBarView.setButtonDrawable(buttonId, iconId);
-    }
     //
     // tracing
     //
