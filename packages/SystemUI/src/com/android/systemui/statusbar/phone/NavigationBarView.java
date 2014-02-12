@@ -688,13 +688,10 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
 
     public void setButtonDrawable(int buttonId, final int iconId) {
         final ImageView iv = (ImageView)getNotifsButton();
-        mRecentAltIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear);
-        mRecentAltLandIcon = res.getDrawable(R.drawable.ic_sysbar_recent_clear_land);
-
         mHandler.post(new Runnable() {
             public void run() {
                 if (iconId == 1) iv.setImageResource(R.drawable.search_light_land);
-                else iv.setImageDrawable(mVertical ? mRecentAltLandIcon : mRecentAltIcon);
+                //else iv.setImageDrawable(mVertical ? mRecentAltLandIcon : mRecentAltIcon);
                 mWasNotifsButtonVisible = iconId != 0 && ((mDisabledFlags & View.STATUS_BAR_DISABLE_HOME) != 0);
                 setVisibleOrGone(getNotifsButton(), mWasNotifsButtonVisible);
             }

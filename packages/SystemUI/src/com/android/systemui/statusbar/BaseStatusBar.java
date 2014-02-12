@@ -695,7 +695,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     }
 
     @Override
-<<<<<<< HEAD
     public void toggleScreenshot() {
         int msg = MSG_TOGGLE_SCREENSHOT;
         mHandler.removeMessages(msg);
