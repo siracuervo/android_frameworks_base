@@ -15,7 +15,6 @@
 -->
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:systemui="http://schemas.android.com/apk/res/com.android.systemui"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -26,16 +25,7 @@
             android:layout_width="22dp"
             android:layout_height="32dp"
             android:padding="3dp"
-            android:layout_gravity="center_horizontal"
-            systemui:batteryView="quicksettings"
-            />
-    <com.android.systemui.BatteryCircleMeterView
-            android:id="@+id/circle_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="3dp"
-            android:layout_gravity="center_horizontal"
-            systemui:batteryView="quicksettings"
+            android:layout_gravity="top|center_horizontal"
             />
     <TextView
             style="@style/TextAppearance.QuickSettings.TileView"

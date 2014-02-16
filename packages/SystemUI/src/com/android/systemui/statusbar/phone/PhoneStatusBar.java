@@ -113,9 +113,6 @@ import com.android.internal.util.liquid.ButtonsConstants;
 import com.android.internal.util.liquid.ButtonsHelper;
 import com.android.internal.util.liquid.DeviceUtils;
 import com.android.internal.util.liquid.QuietHoursHelper;
-
-import com.android.systemui.BatteryMeterView;
-import com.android.systemui.BatteryCircleMeterView;
 import com.android.systemui.DemoMode;
 import com.android.systemui.EventLogTags;
 import com.android.systemui.R;
@@ -376,9 +373,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
 
-    private BatteryMeterView mBattery;
-    private BatteryCircleMeterView mCircleBattery;
-
     private SharedPreferences mShared;
 
     // XXX: gesture research
@@ -426,21 +420,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_HIDE_LABELS),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_TEXT_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_BATTERY_TEXT_CHARGING_COLOR),
-                    false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.STATUS_BAR_CIRCLE_BATTERY_ANIMATIONSPEED),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NAVIGATION_BAR_BUTTON_TINT),
@@ -527,17 +506,17 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.QUICK_SETTINGS_RIBBON_TILES),
                     false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.PIE_CONTROLS), false, this,
-                    UserHandle.USER_ALL);
+                    Settings.System.PIE_CONTROLS),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.EXPANDED_DESKTOP_STATE), false, this,
-                    UserHandle.USER_ALL);
+                    Settings.System.EXPANDED_DESKTOP_STATE),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.NAVBAR_LEFT_IN_LANDSCAPE), false, this,
-                    UserHandle.USER_ALL);
+                    Settings.System.NAVBAR_LEFT_IN_LANDSCAPE),
+                    false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.REMINDER_ALERT_ENABLED), false, this,
-                    UserHandle.USER_ALL);
+                    Settings.System.REMINDER_ALERT_ENABLED),
+                    false, this, UserHandle.USER_ALL);
 
             update();
         }
@@ -705,7 +684,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
                 updateCarrierAndWifiLabelVisibility(false);
             }
-            updateBatteryIcons();
 
             int reminderHolder= Settings.System.getIntForUser(mContext.getContentResolver(),
                         Settings.System.REMINDER_ALERT_ENABLED, 0, UserHandle.USER_CURRENT);
@@ -734,13 +712,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         return Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.EXPANDED_DESKTOP_STATE, 0,
                 UserHandle.USER_CURRENT) == 1;
-    }
-
-    private void updateBatteryIcons() {
-        if (mBattery != null && mCircleBattery != null) {
-            mBattery.updateSettings();
-            mCircleBattery.updateSettings();
-        }
     }
 
     public void updateReminder() {
@@ -1215,6 +1186,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         final SignalClusterView signalCluster =
                 (SignalClusterView)mStatusBarView.findViewById(R.id.signal_cluster);
 
+
         mNetworkController.addSignalCluster(signalCluster);
         signalCluster.setNetworkController(mNetworkController);
 
@@ -1404,10 +1376,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         resetUserSetupObserver();
 
         mNotificationShortcutsLayout.setupShortcuts();
-
-        mBattery = (BatteryMeterView) mStatusBarView.findViewById(R.id.battery);
-        mCircleBattery = (BatteryCircleMeterView) mStatusBarView.findViewById(R.id.circle_battery);
-        updateBatteryIcons();
 
         mNetworkController.setListener(this);
 
