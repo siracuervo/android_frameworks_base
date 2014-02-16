@@ -4182,13 +4182,6 @@ public final class Settings {
         public static final String SHOW_CLEAR_RECENTS_BUTTON = "clear_recents_button";
 
         /**
-         * Whether to control brightness from status bar
-         *
-         * @hide
-         */
-        public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
-
-        /**
          * location of the clear all rectents button
          * @hide
          */
