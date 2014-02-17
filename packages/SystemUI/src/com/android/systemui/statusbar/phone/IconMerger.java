@@ -51,6 +51,8 @@ public class IconMerger extends LinearLayout {
 
         mIconSize = context.getResources().getDimensionPixelSize(
                 R.dimen.status_bar_icon_size);
+                
+        mTotalWidth = mContext.getResources().getDisplayMetrics().widthPixels;
 
         mIconHPadding = mContext.getResources().getDimensionPixelSize(
                 R.dimen.status_bar_icon_padding);
