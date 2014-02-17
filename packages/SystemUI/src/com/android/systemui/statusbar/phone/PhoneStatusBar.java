@@ -262,7 +262,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     View mClockViewExpanded;
     View mDateViewExpanded;
     View mClearButton;
-    ImageView mAddTileButton;
     ImageView mSettingsButton, mNotificationButton;
 
     // carrier/wifi label
@@ -349,8 +348,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     int mSystemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE;
 
     DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-
-    private SharedPreferences mShared;
 
     private BatteryMeterView mBattery;
     private BatteryCircleMeterView mCircleBattery;
@@ -1666,12 +1663,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             // Force asset reloading
             mNotificationButton.setImageDrawable(null);
             mNotificationButton.setImageResource(R.drawable.ic_notifications);
-        }
-
-        if (mAddTileButton != null) {
-            // Force asset reloading
-            mAddTileButton.setImageDrawable(null);
-            mAddTileButton.setImageResource(R.drawable.ic_menu_add);
         }
 
         refreshAllStatusBarIcons();
@@ -4094,69 +4085,27 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             return;
         }
 
-        @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            if (uri != null && uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_QUICK_ACCESS))) {
-                final ContentResolver resolver = mContext.getContentResolver();
-                mHasQuickAccessSettings = Settings.System.getIntForUser(resolver,
-                        Settings.System.QS_QUICK_ACCESS, 0, UserHandle.USER_CURRENT) == 1;
-                if (mHasQuickAccessSettings) {
-                    inflateRibbon();
-                    mRibbonView.setVisibility(View.VISIBLE);
-                } else {
-                    cleanupRibbon();
-                }
-            } else if (uri != null && uri.equals(Settings.System.getUriFor(
-                    Settings.System.QS_QUICK_ACCESS_LINKED))) {
-                final ContentResolver resolver = mContext.getContentResolver();
-                boolean layoutLinked = Settings.System.getIntForUser(resolver,
-                        Settings.System.QS_QUICK_ACCESS_LINKED, 1, UserHandle.USER_CURRENT) == 1;
-                if (mQuickAccessLayoutLinked != layoutLinked) {
-                    // Reload the ribbon
-                    mQuickAccessLayoutLinked = layoutLinked;
-                    cleanupRibbon();
-                    inflateRibbon();
-                    mRibbonView.setVisibility(View.VISIBLE);
-                }
-            }  else if (uri != null && uri.equals(Settings.System.getUriFor(
-                    Settings.System.QUICK_SETTINGS_RIBBON_TILES))) {
-                    cleanupRibbon();
-                    inflateRibbon();
-                    mRibbonView.setVisibility(View.VISIBLE);
-            }else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_LANDSCAPE))
-                || uri.equals(Settings.System.getUriFor(
-                    Settings.System.NOTIFICATION_BACKGROUND_ALPHA))) {
-                if (mNotificationPanel != null) {
-                    mNotificationPanel.setBackgroundDrawables();
-                }
-                if (mSettingsPanel != null) {
-                    mSettingsPanel.setBackgroundDrawables();
-                }
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.QUICK_TILES_PER_ROW))) {
-                recreateStatusBar();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.QUICK_TILES_PER_ROW_DUPLICATE_LANDSCAPE))) {
-                recreateStatusBar();
-            } else if (mSettingsContainer != null) {
-                mQS.setupQuickSettings();
-                if (mQuickAccessLayoutLinked && mRibbonQS != null) {
-                    mRibbonQS.setupQuickSettings();
-                }
-	    }
+   float notifAlpha = Settings.System.getFloatForUser(
+            mContext.getContentResolver(), Settings.System.NOTIFICATION_ALPHA,
+            0.0f, UserHandle.USER_CURRENT);
+        int alpha = (int) ((1 - notifAlpha) * 255);
+        int dataSize = mNotificationData.size();
+        for (int i = 0; i < dataSize; i++) {
+            Entry ent = mNotificationData.get(dataSize - i - 1);
+            View expanded = ent.expanded;
+            if (expanded !=null && expanded.getBackground() != null) {
+                expanded.getBackground().setAlpha(alpha);
+            }
+            View expandedBig = ent.getBigContentView();
+            if (expandedBig != null && expandedBig.getBackground() != null) {
+                expandedBig.getBackground().setAlpha(alpha);
+            }
+            StatusBarIconView icon = ent.icon;
+            if (icon !=null && icon.getBackground() != null) {
+                icon.getBackground().setAlpha(alpha);
 
-	    final ContentResolver cr = mContext.getContentResolver();
-
-            int sidebarPosition = Settings.System.getInt(
-                    cr, Settings.System.APP_SIDEBAR_POSITION, AppSidebar.SIDEBAR_POSITION_LEFT);
-            if (sidebarPosition != mSidebarPosition) {
-                mSidebarPosition = sidebarPosition;
-                mWindowManager.updateViewLayout(mAppSidebar, getAppSidebarLayoutParams(sidebarPosition));
             }
         }
     }
 }
+
