@@ -1140,7 +1140,18 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
-               
+                } else if (item.getItemId() == R.id.recent_wipe_app) {
+                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
+                    if (viewHolder != null) {
+                        final TaskDescription ad = viewHolder.taskDescription;
+                        ActivityManager am = (ActivityManager) mContext.
+                                getSystemService(Context.ACTIVITY_SERVICE);
+                        am.clearApplicationUserData(ad.packageName,
+                                new FakeClearUserDataObserver());
+                        ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
+                    } else {
+                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
+                    }
                 } else if (item.getItemId() == R.id.recent_add_split_view && mHaloEnabled != 1) {
                     // Either start a new activity in split view, or move the current task
                     // to front, but resized
