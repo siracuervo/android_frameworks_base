@@ -4091,40 +4091,208 @@ public final class Settings {
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
 
         /**
-         * TeloRadio enable
+         * Whether to enable pie controls
+         * The value is 1, 2 or 0).
+         * Default: 0
+         * On expanded desktop: 1
+         * always: 2
          * @hide
          */
-        public static final String TELO_RADIO_ENABLED = "telo_radio_enabled";
+        public static final String PIE_CONTROLS = "pie_controls";
 
         /**
-         * TeloRadio 2g with wifi
+         * Whether dynamic menu button is shown or not or dynamic (default)
          * @hide
          */
-        public static final String TELO_RADIO_2G_WIFI = "telo_radio_2g_wifi";
+        public static final String PIE_MENU = "pie_menu";
 
         /**
-         * TeloRadio LTE in high power
+         * Whether right edge PIE is mirrored or not
          * @hide
          */
-        public static final String TELO_RADIO_LTE = "telo_radio_lte";
+        public static final String PIE_MIRROR_RIGHT = "pie_mirror_right";
 
         /**
-         * TeloRadio change 2g when screenoff
+         * Pie show text (0 or 1)
          * @hide
          */
-        public static final String TELO_RADIO_2G_SCREENOFF = "telo_radio_2g_screenoff";
+        public static final String PIE_SHOW_TEXT = "pie_show_text";
 
         /**
-         * TeloRadio time to change 2g when screenoff
+         * Pie disable redundant statusbar infos (0 or 1)
          * @hide
          */
-        public static final String TELO_RADIO_2G_SCREENOFF_TIME = "telo_radio_2g_screenoff_timeout";
+        public static final String PIE_DISABLE_STATUSBAR_INFO = "pie_disable_statusbar_info";
 
         /**
-         * TeloRadio change 3g when unlock device
+         * Pie show snap (0 or 1)
          * @hide
          */
-        public static final String TELO_RADIO_GO3G_UNLOCK = "telo_radio_go_3g_unlock";
+        public static final String PIE_SHOW_SNAP = "pie_show_snap";
+
+        /**
+         * Pie show background (0 or 1)
+         * @hide
+         */
+        public static final String PIE_SHOW_BACKGROUND = "pie_show_background";
+
+        /**
+         * Locations of the pie in the screen.
+         * (1<<0) = LEFT
+         * (1<<1) = BOTTOM
+         * (1<<2) = RIGHT
+         * (1<<3) = TOP
+         * Default: LEFT
+         * @hide
+         */
+        public static final String PIE_GRAVITY = "pie_gravity";
+
+        /**
+         * Relative pie size (fraction)
+         * Default: 1.0f
+         * @hide
+         */
+        public static final String PIE_SIZE = "pie_size";
+
+        /**
+         * Relative pie trigger thickness
+         * @hide
+         */
+        public static final String PIE_TRIGGER_THICKNESS = "pie_trigger_thickness";
+
+        /**
+         * Relative pie trigger height for left and right trigger
+         * @hide
+         */
+        public static final String PIE_TRIGGER_HEIGHT = "pie_trigger_height";
+
+        /**
+		 *
+         * Should Dialer suggest nearby phone numbers
+         *
+         * @hide
+         */
+        public static final String ENABLE_DIALER_SUGGESTIONS = "enable_dialer_suggestions";
+
+        /**
+         * Should Dialer reverse look up names for unknown phone numbers
+         *
+         * @hide
+         */
+        public static final String ENABLE_DIALER_REVERSE_LOOKUP = "enable_dialer_reverse_lookup";
+
+        /**
+         * Pie trigger vertical gravity
+         *
+         * @hide
+         */
+        public static final String PIE_TRIGGER_GRAVITY_LEFT_RIGHT = "pie_trigger_gravity_left_right";
+
+        /**
+         * Pie trigger show
+         *
+         * @hide
+         */
+        public static final String PIE_TRIGGER_SHOW = "pie_trigger_show";
+
+        /**
+         * Pie IME softkeyboard state toggle (0 or 1)
+         * @hide
+         */
+        public static final String PIE_SOFTKEYBOARD_IS_SHOWING = "pie_softkeyboard_is_showing";
+
+        /**
+         * Pie allow to adjust triggers if IME is showing (0 or 1)
+         * @hide
+         */
+        public static final String PIE_ADJUST_TRIGGER_FOR_IME = "pie_adjust_trigger_for_ime";
+
+        /**
+         * Pie button color
+         * @hide
+         */
+        public static final String PIE_BUTTON_COLOR = "pie_button_color";
+
+        /**
+         * Pie button press color
+         * @hide
+         */
+        public static final String PIE_BUTTON_PRESSED_COLOR = "pie_button_pressed_color";
+
+        /**
+         * Pie button long press color
+         * @hide
+         */
+        public static final String PIE_BUTTON_LONG_PRESSED_COLOR = "pie_button_long_pressed_color";
+
+        /**
+         * Pie button outline color
+         * @hide
+         */
+        public static final String PIE_BUTTON_OUTLINE_COLOR = "pie_button_outline_color";
+
+        /**
+         * Pie background color
+         * @hide
+         */
+        public static final String PIE_BACKGROUND_COLOR = "pie_background_color";
+
+        /**
+         * Pie snap color
+         * @hide
+         */
+        public static final String PIE_SNAP_COLOR = "pie_snap_color";
+
+        /**
+         * Pie text color
+         * @hide
+         */
+        public static final String PIE_TEXT_COLOR = "pie_text_color";
+
+        /**
+         * Pie icon color
+         * @hide
+         */
+        public static final String PIE_ICON_COLOR = "pie_icon_color";
+
+        /**
+         * Pie icon color mode
+         * @hide
+         */
+        public static final String PIE_ICON_COLOR_MODE = "pie_icon_color_mode";
+
+        /**
+         * Pie button alpha
+         * @hide
+         */
+        public static final String PIE_BUTTON_ALPHA = "pie_button_alpha";
+
+        /**
+         * Pie button pressed and long pressed alpha
+         * @hide
+         */
+        public static final String PIE_BUTTON_PRESSED_ALPHA = "pie_button_pressed_alpha";
+
+        /**
+         * Pie background alpha
+         * @hide
+         */
+        public static final String PIE_BACKGROUND_ALPHA = "pie_background_alpha";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTONS_CONFIG = "pie_buttons_config";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_SECOND_LAYER_ACTIVE = "pie_second_layer_active";
+
+        /**
+         * @hide
+         */
+        public static final String PIE_BUTTONS_CONFIG_SECOND_LAYER = "pie_buttons_config_second_layer";
 
         /**
          * Whether to unlock the menu key.  The value is boolean (1 or 0).
@@ -4166,24 +4334,6 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
-
-        /**
-         * TeloRadio Low power network
-         * @hide
-         */
-        public static final String TELO_RADIO_LOW_POWER = "telo_radio_low_power";
-
-        /**
-         * TeloRadio High power network
-         * @hide
-         */
-        public static final String TELO_RADIO_HIGH_POWER = "telo_radio_high_power";
-
-        /**
-         * Whether to use the custom status bar header or not
-         * @hide
-         */
-        public static final String STATUS_BAR_CUSTOM_HEADER = "status_bar_custom_header";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -4270,12 +4420,7 @@ public final class Settings {
             QUIET_HOURS_MUTE,
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
-            LOCKSCREEN_ALWAYS_SHOW_BATTERY,
-            TELO_RADIO_ENABLED,
-            TELO_RADIO_2G_WIFI,
-            TELO_RADIO_LTE,
-            TELO_RADIO_2G_SCREENOFF,
-            TELO_RADIO_GO3G_UNLOCK,
+            LOCKSCREEN_ALWAYS_SHOW_BATTERY
         };
 
         // Settings moved to Settings.Secure
