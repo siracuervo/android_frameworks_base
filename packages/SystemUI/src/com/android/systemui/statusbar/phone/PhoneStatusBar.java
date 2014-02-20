@@ -4036,6 +4036,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mNavigationBarView.recreateNavigationBar();
         }
         repositionNavigationBar();
+        if (mNavigationBarView != null) {
+            mNavigationBarView.updateResources();
+        }
 
         // recreate StatusBarIconViews.
         for (int i = 0; i < nIcons; i++) {
