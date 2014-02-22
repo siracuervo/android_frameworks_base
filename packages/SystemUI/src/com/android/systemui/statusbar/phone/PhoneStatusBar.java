@@ -106,6 +106,7 @@ import com.android.internal.util.liquid.ButtonConfig;
 import com.android.internal.util.liquid.ButtonsConstants;
 import com.android.internal.util.liquid.ButtonsHelper;
 import com.android.internal.util.liquid.DeviceUtils;
+import com.android.systemui.liquid.StatusHeaderMachine;
 
 import com.android.systemui.BatteryMeterView;
 import com.android.systemui.BatteryCircleMeterView;
@@ -130,7 +131,6 @@ import com.android.systemui.statusbar.policy.NetworkController;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.OnSizeChangedListener;
 import com.android.systemui.statusbar.policy.RotationLockController;
-import com.android.systemui.omni.StatusHeaderMachine;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
