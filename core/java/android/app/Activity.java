@@ -2482,9 +2482,9 @@ public class Activity extends ContextThemeWrapper
         WindowManager.LayoutParams attrs = mWindow.getAttributes();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                onUserInteraction();
+		onUserInteraction();
                 if (mWindow.mIsFloatingWindow) {
-                    Log.d(TAG, "Y: " + ev.getY() + " Raw: " + ev.getRawY());
+		    Log.d(TAG, "Y: " + ev.getY() + " Raw: " + ev.getRawY());
                     if (ev.getX() >= attrs.width - 50) scaleW = true;
                     if (ev.getY() >= attrs.height - 50) scaleH = true;
                     if (ev.getY() <= 50) move = true;
@@ -2498,7 +2498,7 @@ public class Activity extends ContextThemeWrapper
                if (mWindow.mIsFloatingWindow && lastPos != null) {
                     int x = attrs.x;
                     int y = attrs.y;
-                    Point screenSize = new Point();
+		    Point screenSize = new Point();
                     mWindowManager.getDefaultDisplay().getSize(screenSize);
                     if (move) {
                         Log.e(TAG, "Move!");
@@ -2515,14 +2515,14 @@ public class Activity extends ContextThemeWrapper
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                boolean ret = scaleW || scaleH || move;
+		boolean ret = scaleW || scaleH || move;
                 scaleW = scaleH = move = false;
                 lastPos = null;
                 if (ret) return true;
                 break;
         }
 
-	    int mHaloEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.HALO_ENABLED, 0));
+	int mHaloEnabled = (Settings.System.getInt(getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
         if (mIsSplitView && mHaloEnabled != 1) {
             IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
@@ -5336,8 +5336,8 @@ public class Activity extends ContextThemeWrapper
             mWindow.mIsFloatingWindow = true;
             mWindow.setCloseOnTouchOutsideIfNotSet(false);
             mWindow.setGravity(Gravity.TOP | Gravity.LEFT);
-            
-            //if (android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
+
+            //if (this instanceof LayerActivity || android.os.Process.myUid() == android.os.Process.SYSTEM_UID) {
             int flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL;
                 mWindow.setFlags(flags, flags);
                 WindowManager.LayoutParams params = mWindow.getAttributes();
