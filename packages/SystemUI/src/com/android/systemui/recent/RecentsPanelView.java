@@ -1060,15 +1060,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         final PopupMenu popup =
             new PopupMenu(mContext, anchorView == null ? selectedView : anchorView);
         mPopup = popup;
+        popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
+
 	    final ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
-
-	    int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
-
-	    if (mHaloEnabled != 1) {
-            popup.getMenuInflater().inflate(R.menu.recent_popup_menu_split, popup.getMenu());
-	    } else {
-		    popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
-	    }
 
         if (viewHolder != null && viewHolder.taskDescription.isLocked() == true) {
             MenuItem item = popup.getMenu().findItem(R.id.recent_lock_item);
@@ -1102,6 +1096,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
         }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
 
@@ -1282,7 +1277,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName(
                             "com.android.settings",
-                            "com.android.settings.Settings$ASSRamBarActivity"));
+                            "com.android.settings.Settings$RamBarActivity"));
 
                     try {
                         // Dismiss the lock screen when Settings starts.
