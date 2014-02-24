@@ -32,6 +32,12 @@
     <!-- Content description of the data connection type HSPA+ for accessibility (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_data_connection_HP">HSPA+</string>
 
+    <!-- Dialog Cancel/OK -->
+    <string name="cancel">Cancel</string>
+    <string name="dlg_ok">Ok</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
     <!-- Off/On/Toggle -->
     <string name="off">Off</string>
     <string name="on">On</string>
