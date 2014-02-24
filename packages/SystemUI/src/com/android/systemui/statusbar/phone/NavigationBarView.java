@@ -696,6 +696,7 @@ public class NavigationBarView extends LinearLayout implements BaseStatusBar.Nav
         });
     }
 
+    @Override
     public void setDisabledFlags(int disabledFlags) {
         setDisabledFlags(disabledFlags, false);
     }
