@@ -152,8 +152,6 @@ public abstract class Window {
     
     private boolean mDestroyed;
 
-    public boolean mIsFloatingWindow = false;
-
     // The current window attributes.
     private final WindowManager.LayoutParams mWindowAttributes =
         new WindowManager.LayoutParams();
@@ -600,17 +598,6 @@ public abstract class Window {
      */
     public void setLayout(int width, int height) {
         final WindowManager.LayoutParams attrs = getAttributes();
-        attrs.width = width;
-        attrs.height = height;
-        if (mCallback != null) {
-            mCallback.onWindowAttributesChanged(attrs);
-        }
-    }
-
-    public void setLayout(int x, int y, int width, int height) {
-        final WindowManager.LayoutParams attrs = getAttributes();
-        attrs.x = x;
-        attrs.y = y;
         attrs.width = width;
         attrs.height = height;
         if (mCallback != null) {

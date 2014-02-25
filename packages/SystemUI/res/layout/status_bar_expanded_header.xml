@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:paddingStart="8dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="4dp"
         android:background="@drawable/ic_notify_button_bg"
         android:enabled="false"
         >
@@ -59,6 +59,47 @@
             android:layout_centerVertical="true"
             />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/spacer"
+        android:layout_width="2dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:background="@android:drawable/divider_horizontal_dark"
+        />
+
+    <LinearLayout
+        android:id="@+id/reminder"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:background="@drawable/ic_notify_button_bg"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:id="@+id/title"
+            android:paddingTop="8dp"
+            android:paddingBottom="1dp"
+            android:textAllCaps="true"
+            android:textSize="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            />
+        <ViewFlipper
+            android:id="@+id/message"
+            android:inAnimation="@anim/reminder_fade_in"
+            android:outAnimation="@anim/reminder_fade_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:paddingBottom="8dp"
+            />
+    </LinearLayout>
 
     <Space
         android:layout_width="0dp"
@@ -88,22 +129,6 @@
         android:background="@drawable/ic_notify_button_bg"
         android:contentDescription="@string/accessibility_clear_all"
         />
-
-    <FrameLayout android:id="@+id/action_button_holder"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="12dp"
-        >
-        <ImageView android:id="@+id/halo_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginLeft="4dp"
-            android:scaleType="center"
-            android:src="@drawable/ic_notify_halo"
-            android:contentDescription="@string/accessibility_halo"
-            />
-
-    </FrameLayout>
 
     <FrameLayout android:id="@+id/settings_button_holder"
         android:layout_width="50dp"

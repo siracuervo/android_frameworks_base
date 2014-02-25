@@ -91,9 +91,6 @@
     <!-- Active display -->
     <uses-permission android:name="android.permission.SYSTEM_NOTIFICATION_LISTENER" />
 
-    <!-- Halo -->
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-
     <!-- Record Audio QuickRecord -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
@@ -134,6 +131,8 @@
         <service android:name=".ImageWallpaper"
                 android:permission="android.permission.BIND_WALLPAPER"
                 android:exported="true" />
+
+        <service android:name=".service.ReminderService"/>
 
         <receiver android:name=".BootReceiver" androidprv:primaryUserOnly="true">
             <intent-filter>
@@ -235,6 +234,20 @@
             android:launchMode="singleInstance" >
             <intent-filter>
                 <action android:name="com.android.systemui.timedialog.MusicTileTimeDialog" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Reminder dialog sets -->
+        <activity
+            android:name="com.android.systemui.timedialog.ReminderTimeDialog"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
+            android:taskAffinity="com.android.systemui.timedialog.ReminderTimeDialog"
+            android:launchMode="singleInstance" >
+            <intent-filter>
+                <action android:name="com.android.systemui.timedialog.ReminderTimeDialog" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -430,10 +443,6 @@
                   android:exported="true"
                   android:theme="@style/Theme.DummyActivity">
         </activity>
-
-        <!-- Halo -->
-        <activity android:name="com.android.systemui.Transparent"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
     </application>
 </manifest>

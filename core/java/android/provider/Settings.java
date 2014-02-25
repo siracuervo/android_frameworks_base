@@ -2551,12 +2551,6 @@ public final class Settings {
          */
         public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
-        /**
-         * Network speed indicator
-         * @hide
-         */
-        public static final String STATUS_BAR_TRAFFIC = "status_bar_traffic";
-
         /** Sprint MWI Quirk: Show message wait indicator notifications
          * @hide
          */
@@ -2854,11 +2848,29 @@ public final class Settings {
         public static final String STATUSBAR_CLOCK_DATE_FORMAT = "statusbar_clock_date_format";
 
         /**
+         * Settings for clock font style
+         * @hide
+         */
+        public static final String STATUSBAR_CLOCK_FONT_STYLE = "statusbar_clock_font_style";
+
+        /**
          * Config for advanced power menu
          *
          * @hide
          */
         public static final String POWER_MENU_CONFIG = "power_menu_config";
+
+        /**
+         * Enable blocking wakelock
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_ENABLED = "wakelock_blocking_enabled";
+
+        /**
+         * List of wakelock blocks selected
+         * @hide
+         */
+        public static final String WAKELOCK_BLOCKING_LIST = "wakelock_blocking_list";
 
         /**
          * Text color for advanced power menu
@@ -2938,6 +2950,12 @@ public final class Settings {
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
         /**
+         * Enables MultiUser
+         * @hide
+         */
+        public static final String ALLOW_MULTIUSER = "allow_multiuser";
+
+        /**
          * Whether to show the IME switcher in the status bar
          * @hide
          */
@@ -3012,6 +3030,13 @@ public final class Settings {
          * @hide
          */
         public static final String FORWARD_LOOKUP_PROVIDER = "forward_lookup_provider";
+
+        /**
+        *
+        * SMOOTH PROGRESS BAR interpolator
+        * @hide
+        */
+        public static final String PROGRESSBAR_INTERPOLATOR = "progressbar_interpolator";
 
         /**
          * The reverse lookup provider
@@ -3242,6 +3267,27 @@ public final class Settings {
          * @hide
          */
         public static final String TILE_CONTACT_ACTIONS = "tile_contact_actions";
+
+        /**
+         * Reminder alert on / off
+         * @hide
+         */
+        public static final String REMINDER_ALERT_ENABLED = "reminder_alert_enabled";
+
+        /**
+         * Reminder alert extras
+         *  0 = no alert
+         *  1 = alert rings once
+         *  2 = alert rings until dismissed
+         * @hide
+         */
+        public static final String REMINDER_ALERT_NOTIFY = "reminder_alert_notify";
+
+        /**
+         * Reminder alert ringer
+         * @hide
+         */
+        public static final String REMINDER_ALERT_RINGER = "reminder_alert_ringer";
 
         /**
          * Show icon when stylus is used?
@@ -3518,12 +3564,6 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_CONFIG = "navigation_bar_config";
-
-        /**
-         * Whether navigation bar is placed on the left side in landscape mode
-         * @hide
-         */
-        public static final String NAVBAR_LEFT_IN_LANDSCAPE = "navigation_bar_left";
 
         /**
          * Custom navring intent and action configuration
@@ -3969,74 +4009,6 @@ public final class Settings {
         public static final String LOCKSCREEN_LONG_MENU_ACTION = "lockscreen_long_menu_action";
 
         /**
-         * HALO enabled, should default to 0 (HALO is disabled)
-         * @hide
-         */
-        public static final String HALO_ENABLED = "halo_enabled";
-
-        /**
-         * Whether to disable haptic feedback during quiet hours.
-         * HALO, should default to 0 (no, do not show)
-         * @hide
-         */
-        public static final String HALO_ACTIVE = "halo_active";
-
-        /**
-         * HALO reversed?, should default to 1 (yes, reverse)
-         * @hide
-         */
-        public static final String HALO_REVERSED = "halo_reversed";
-
-        /**
-         * HALO hide?, should default to 0 (no, do not hide)
-         * @hide
-         */
-        public static final String HALO_HIDE = "halo_hide";
-
-        /**
-         * HALO pause activities?, defaults to 0 (no, do not pause) on devices which isLargeRAM() == true
-         * otherwise it defaults to 1 (yes, do pause)
-         * @hide
-         */
-        public static final String HALO_PAUSE = "halo_pause";
-
-        /**
-         * HALO size fraction, default is 1.0f (normal)
-         * @hide
-         */
-        public static final String HALO_SIZE = "halo_size";
-
-        /**
-         * HALO ninja?, should default to 0 (no, do not disappear when empty)
-         * @hide
-         */
-        public static final String HALO_NINJA = "halo_ninja";
-
-        /**
-         * HALO message box?, should default to 1 (yes, show message box on incoming notification)
-         * @hide
-         */
-        public static final String HALO_MSGBOX = "halo_msgbox";
-
-        /**
-         * HALO notificatoin count?, should default to 4 (both)
-         * @hide
-         */
-        public static final String HALO_NOTIFY_COUNT = "halo_notify_count";
-
-        /**
-         * HALO message box animation?, should default to 2 (flip animation)
-         * @hide
-         */
-        public static final String HALO_MSGBOX_ANIMATION = "halo_msgbox_animation";
-
-        /**
-         * HALO unlock ping?, should default to 0 (no, do not ping on unlock)
-         * @hide
-         */
-        public static final String HALO_UNLOCK_PING = "halo_unlock_ping";
-
-        /**
          * Whether or not to show circle battery around the lockscreen ring
          * @hide
          */
@@ -4084,47 +4056,12 @@ public final class Settings {
          */
         public static final String RECENTS_RAM_BAR_CACHE_COLOR = "recents_ram_bar_cache_color";
 
+
         /**
          * Ram Usage Bar app mem color
          * @hide
          */
         public static final String RECENTS_RAM_BAR_ACTIVE_APPS_COLOR = "recents_ram_bar_active_apps_color";
-
-        /**
-         * TeloRadio enable
-         * @hide
-         */
-        public static final String TELO_RADIO_ENABLED = "telo_radio_enabled";
-
-        /**
-         * TeloRadio 2g with wifi
-         * @hide
-         */
-        public static final String TELO_RADIO_2G_WIFI = "telo_radio_2g_wifi";
-
-        /**
-         * TeloRadio LTE in high power
-         * @hide
-         */
-        public static final String TELO_RADIO_LTE = "telo_radio_lte";
-
-        /**
-         * TeloRadio change 2g when screenoff
-         * @hide
-         */
-        public static final String TELO_RADIO_2G_SCREENOFF = "telo_radio_2g_screenoff";
-
-        /**
-         * TeloRadio time to change 2g when screenoff
-         * @hide
-         */
-        public static final String TELO_RADIO_2G_SCREENOFF_TIME = "telo_radio_2g_screenoff_timeout";
-
-        /**
-         * TeloRadio change 3g when unlock device
-         * @hide
-         */
-        public static final String TELO_RADIO_GO3G_UNLOCK = "telo_radio_go_3g_unlock";
 
         /**
          * Whether to unlock the menu key.  The value is boolean (1 or 0).
@@ -4140,6 +4077,18 @@ public final class Settings {
          * @hide
          */
         public static final String NOTIFICATION_VIBRATE_DURING_ALERTS_DISABLED = "vibrate_while_no_alerts";
+
+        /**
+         * Whether to show the network status in the status bar
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_STATS = "status_bar_network_stats";
+
+        /**
+         * Frequency at which stats are updated, in milliseconds
+         * @hide
+         */
+        public static final String STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL = "status_bar_network_stats_update_frequency";
 
         /**
          * Holds the text for the Carrier label. An empty string
@@ -4165,19 +4114,72 @@ public final class Settings {
          * @hide
          */
         public static final String LOCKSCREEN_BLUR_BEHIND = "lockscreen_blur_behind";
+
+        /**
+         * Radius of the blur lockscreen background
+         * @hide
+         */
         public static final String LOCKSCREEN_BLUR_RADIUS = "lockscreen_blur_radius";
 
-        /**
-         * TeloRadio Low power network
-         * @hide
-         */
-        public static final String TELO_RADIO_LOW_POWER = "telo_radio_low_power";
+	    /**
+	     * SMOOTH PROGRESS BAR Mirror
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_MIRROR = "progressbar_mirror";
+
+	    /**
+	     * SMOOTH PROGRESS BAR Reverse
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_REVERSE = "progressbar_reverse";
+
+	    /**
+	     * SMOOTH PROGRESS BAR Speed
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_SPEED = "progressbar_speed";
 
         /**
-         * TeloRadio High power network
-         * @hide
-         */
-        public static final String TELO_RADIO_HIGH_POWER = "telo_radio_high_power";
+	     * SMOOTH PROGRESS BAR Width
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_WIDTH = "progressbar_width";
+
+        /**
+	     * SMOOTH PROGRESS BAR Length
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_LENGTH = "progressbar_length";
+
+        /**
+	     * SMOOTH PROGRESS BAR Count
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_COUNT = "progressbar_count";
+
+        /**
+	     * SMOOTH PROGRESS BAR Color_1
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_COLOR_1 = "progressbar_color_1";
+
+        /**
+	     * SMOOTH PROGRESS BAR Color_2
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_COLOR_2 = "progressbar_color_2";
+
+        /**
+	     * SMOOTH PROGRESS BAR Color_3
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_COLOR_3 = "progressbar_color_3";
+
+        /**
+	     * SMOOTH PROGRESS BAR Color_4
+	     * @hide
+	     */
+        public static final String PROGRESSBAR_COLOR_4 = "progressbar_color_4";
 
         /**
          * Whether to use the custom status bar header or not
@@ -4270,12 +4272,7 @@ public final class Settings {
             QUIET_HOURS_MUTE,
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
-            LOCKSCREEN_ALWAYS_SHOW_BATTERY,
-            TELO_RADIO_ENABLED,
-            TELO_RADIO_2G_WIFI,
-            TELO_RADIO_LTE,
-            TELO_RADIO_2G_SCREENOFF,
-            TELO_RADIO_GO3G_UNLOCK,
+            LOCKSCREEN_ALWAYS_SHOW_BATTERY
         };
 
         // Settings moved to Settings.Secure

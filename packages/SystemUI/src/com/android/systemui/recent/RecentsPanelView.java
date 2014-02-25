@@ -137,7 +137,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     TextView mRamText;
 
     MemInfoReader mMemInfoReader = new MemInfoReader();
-   
+
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();
         public void setAdapter(TaskDescriptionAdapter adapter);
@@ -278,20 +278,15 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
 
-	        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
-
             holder.lockedIcon.setVisibility(td.isLocked() ? VISIBLE : INVISIBLE);
             holder.thumbnailView.setTag(td);
             holder.thumbnailView.setOnLongClickListener(new OnLongClickDelegate(convertView));
-
-	        if(mHaloEnabled != 1){
-		        holder.thumbnailView.setOnTouchListener(new OnTouchListener() {
-		            @Override
-		            public boolean onTouch(View v, MotionEvent m) {
-		                return handleThumbnailTouch(m, holder.thumbnailView);
-		            }
-		        });
-	        }
+		    holder.thumbnailView.setOnTouchListener(new OnTouchListener() {
+		        @Override
+		        public boolean onTouch(View v, MotionEvent m) {
+		            return handleThumbnailTouch(m, holder.thumbnailView);
+		        }
+		    });
             holder.taskDescription = td;
             return convertView;
         }
@@ -871,20 +866,15 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         show(false);
         if (ad.taskId >= 0) {
             // This is an active task; it should just go to the foreground.
-
-	        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
-
-                // If that task was split viewed, a normal press wil resume it to
-                // normal fullscreen view
-	        if(mHaloEnabled != 1){
-		        IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
-		        try {
-		            if (DEBUG) Log.v(TAG, "Restoring window full screen after split, because of normal tap");
-		            wm.setTaskSplitView(ad.taskId, false);
-		        } catch (RemoteException e) {
-		            Log.e(TAG, "Could not setTaskSplitView to fullscreen", e);
-		        }
-	        }
+            // If that task was split viewed, a normal press wil resume it to
+            // normal fullscreen view
+		    IWindowManager wm = (IWindowManager) WindowManagerGlobal.getWindowManagerService();
+		    try {
+		        if (DEBUG) Log.v(TAG, "Restoring window full screen after split, because of normal tap");
+		        wm.setTaskSplitView(ad.taskId, false);
+		    } catch (RemoteException e) {
+		        Log.e(TAG, "Could not setTaskSplitView to fullscreen", e);
+		    }
             am.moveTaskToFront(ad.taskId, ActivityManager.MOVE_TASK_WITH_HOME,
                     opts);
         } else {
@@ -1060,15 +1050,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         final PopupMenu popup =
             new PopupMenu(mContext, anchorView == null ? selectedView : anchorView);
         mPopup = popup;
+        popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
+
 	    final ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
-
-	    int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
-
-	    if (mHaloEnabled != 1) {
-            popup.getMenuInflater().inflate(R.menu.recent_popup_menu_split, popup.getMenu());
-	    } else {
-		    popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
-	    }
 
         if (viewHolder != null && viewHolder.taskDescription.isLocked() == true) {
             MenuItem item = popup.getMenu().findItem(R.id.recent_lock_item);
@@ -1102,10 +1086,9 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
         }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
-
-		        int mHaloEnabled = (Settings.System.getInt(mContext.getContentResolver(), Settings.System.HALO_ENABLED, 0));
 
                 if (item.getItemId() == R.id.recent_remove_item) {
                     ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
@@ -1152,7 +1135,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
-                } else if (item.getItemId() == R.id.recent_add_split_view && mHaloEnabled != 1) {
+                } else if (item.getItemId() == R.id.recent_add_split_view) {
                     // Either start a new activity in split view, or move the current task
                     // to front, but resized
                     ViewHolder holder = (ViewHolder)selectedView.getTag();
@@ -1282,7 +1265,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName(
                             "com.android.settings",
-                            "com.android.settings.Settings$ASSRamBarActivity"));
+                            "com.android.settings.Settings$RamBarActivity"));
 
                     try {
                         // Dismiss the lock screen when Settings starts.
