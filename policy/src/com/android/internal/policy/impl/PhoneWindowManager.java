@@ -975,43 +975,28 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         public void run() {
             if (mHomeDoubleTapPending) {
                 mHomeDoubleTapPending = false;
-                if (!mPressOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                    cancelPreloadRecentApps();
-                }
                 mDisableVibration = maybeDisableVibration(mPressOnHomeBehavior);
-                LiquidActions.processAction(mContext, mPressOnHomeBehavior, false);
+                processAction(mPressOnHomeBehavior);
             }
             if (mMenuDoubleTapPending) {
                 mMenuDoubleTapPending = false;
-                if (!mPressOnMenuBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                    cancelPreloadRecentApps();
-                }
                 mDisableVibration = maybeDisableVibration(mPressOnMenuBehavior);
-                LiquidActions.processAction(mContext, mPressOnMenuBehavior, false);
+                processAction(mPressOnMenuBehavior);
             }
             if (mBackDoubleTapPending) {
                 mBackDoubleTapPending = false;
-                if (!mPressOnBackBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                    cancelPreloadRecentApps();
-                }
                 mDisableVibration = maybeDisableVibration(mPressOnBackBehavior);
-                LiquidActions.processAction(mContext, mPressOnBackBehavior, false);
+                processAction(mPressOnBackBehavior);
             }
             if (mAppSwitchDoubleTapPending) {
                 mAppSwitchDoubleTapPending = false;
-                if (!mPressOnAppSwitchBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                    cancelPreloadRecentApps();
-                }
                 mDisableVibration = maybeDisableVibration(mPressOnAppSwitchBehavior);
-                LiquidActions.processAction(mContext, mPressOnAppSwitchBehavior, false);
+                processAction(mPressOnAppSwitchBehavior);
             }
             if (mAssistDoubleTapPending) {
                 mAssistDoubleTapPending = false;
-                if (!mPressOnAssistBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                    cancelPreloadRecentApps();
-                }
                 mDisableVibration = maybeDisableVibration(mPressOnAssistBehavior);
-                LiquidActions.processAction(mContext, mPressOnAssistBehavior, false);
+                processAction(mPressOnAssistBehavior);
             }
         }
     };
@@ -2425,11 +2410,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
                 if (!virtualKey
                         && !mPressOnHomeBehavior.equals(ButtonsConstants.ACTION_HOME)) {
-                    if (!mPressOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                        cancelPreloadRecentApps();
-                    }
                     mDisableVibration = maybeDisableVibration(mPressOnHomeBehavior);
-                    LiquidActions.processAction(mContext, mPressOnHomeBehavior, false);
+                    processAction(mPressOnHomeBehavior);
                     return -1;
                 }
 
@@ -2479,19 +2461,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mDisableVibration = false;
                         mHomeConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
-                        if (!mDoubleTapOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
-                        LiquidActions.processAction(mContext, mDoubleTapOnHomeBehavior, false);
+                        processAction(mDoubleTapOnHomeBehavior);
                     }
                 } else if (longPress) {
                     if (!keyguardOn
                             && !mLongPressOnHomeBehavior.equals(ButtonsConstants.ACTION_NULL)) {
-                        if (!mLongPressOnHomeBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        LiquidActions.processAction(mContext, mLongPressOnHomeBehavior, false);
+                        processAction(mLongPressOnHomeBehavior);
                         mHomeConsumed = true;
                     }
                 }
@@ -2548,11 +2524,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 if (!virtualKey) {
-                    if (!mPressOnMenuBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                        cancelPreloadRecentApps();
-                    }
                     mDisableVibration = maybeDisableVibration(mPressOnMenuBehavior);
-                    LiquidActions.processAction(mContext, mPressOnMenuBehavior, false);
+                    processAction(mPressOnMenuBehavior);
                     return -1;
                 }
             }
@@ -2575,20 +2548,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mDisableVibration = false;
                         mMenuConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
-                        if (!mDoubleTapOnMenuBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
-                        LiquidActions.processAction(mContext, mDoubleTapOnMenuBehavior, false);
+                        processAction(mDoubleTapOnMenuBehavior);
                         return -1;
                     }
                 } else if (longPress) {
                     if (!keyguardOn
                             && !mLongPressOnMenuBehavior.equals(ButtonsConstants.ACTION_NULL)) {
-                        if (!mLongPressOnMenuBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        LiquidActions.processAction(mContext, mLongPressOnMenuBehavior, false);
+                        processAction(mLongPressOnMenuBehavior);
                         mMenuConsumed = true;
                         return -1;
                     }
@@ -2638,17 +2605,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 if (!virtualKey) {
-                    if (!mPressOnAppSwitchBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                        cancelPreloadRecentApps();
-                    }
                     mDisableVibration = maybeDisableVibration(mPressOnAppSwitchBehavior);
-                    LiquidActions.processAction(mContext, mPressOnAppSwitchBehavior, false);
+                    processAction(mPressOnAppSwitchBehavior);
                     return -1;
                 }
 
                 // Nothing happened execute default action
-                LiquidActions.processAction(mContext,
-                        HwKeyHelper.getPressOnAppSwitchBehavior(mContext, true), false);
+                processAction(HwKeyHelper.getPressOnAppSwitchBehavior(mContext, true));
                 return -1;
             }
 
@@ -2673,22 +2636,14 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mDisableVibration = false;
                         mAppSwitchConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
-                        if (!mDoubleTapOnAppSwitchBehavior.equals(
-                                ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
-                        LiquidActions.processAction(mContext, mDoubleTapOnAppSwitchBehavior, false);
+                        processAction(mDoubleTapOnAppSwitchBehavior);
                     }
                 } else if (longPress) {
                     if (!keyguardOn
                             && !mLongPressOnAppSwitchBehavior.equals(
                                     ButtonsConstants.ACTION_NULL)) {
-                        if (!mLongPressOnAppSwitchBehavior.equals(
-                                ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        LiquidActions.processAction(mContext, mLongPressOnAppSwitchBehavior, false);
+                        processAction(mLongPressOnAppSwitchBehavior);
                         mAppSwitchConsumed = true;
                     }
                 }
@@ -2721,17 +2676,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 if (!virtualKey) {
-                    if (!mPressOnAssistBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                        cancelPreloadRecentApps();
-                    }
                     mDisableVibration = maybeDisableVibration(mPressOnAssistBehavior);
-                    LiquidActions.processAction(mContext, mPressOnAssistBehavior, false);
+                    processAction(mPressOnAssistBehavior);
                     return -1;
                 }
 
                 // Nothing happened execute default action
-                LiquidActions.processAction(mContext,
-                        HwKeyHelper.getPressOnAssistBehavior(mContext, true), false);
+                processAction(HwKeyHelper.getPressOnAssistBehavior(mContext, true));
                 return -1;
             }
 
@@ -2756,19 +2707,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mDisableVibration = false;
                         mAssistConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
-                        if (!mDoubleTapOnAssistBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
-                        LiquidActions.processAction(mContext, mDoubleTapOnAssistBehavior, false);
+                        processAction(mDoubleTapOnAssistBehavior);
                     }
                 } else if (longPress) {
                     if (!keyguardOn
                             && !mLongPressOnAssistBehavior.equals(ButtonsConstants.ACTION_NULL)) {
-                        if (!mLongPressOnAssistBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        LiquidActions.processAction(mContext, mLongPressOnAssistBehavior, false);
+                        processAction(mLongPressOnAssistBehavior);
                         mAssistConsumed = true;
                     }
                 }
@@ -2843,11 +2788,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 }
 
                 if (!virtualKey) {
-                    if (!mPressOnBackBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                        cancelPreloadRecentApps();
-                    }
                     mDisableVibration = maybeDisableVibration(mPressOnBackBehavior);
-                    LiquidActions.processAction(mContext, mPressOnBackBehavior, false);
+                    processAction(mPressOnBackBehavior);
                     return -1;
                 }
             }
@@ -2870,19 +2812,13 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                         mDisableVibration = false;
                         mBackConsumed = true;
                         mHandler.removeCallbacks(mDoubleTapTimeoutRunnable);
-                        if (!mDoubleTapOnBackBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
-                        LiquidActions.processAction(mContext, mDoubleTapOnBackBehavior, false);
+                        processAction(mDoubleTapOnBackBehavior);
                     }
                 } else if (longPress) {
                     if (!keyguardOn
                             && !mLongPressOnBackBehavior.equals(ButtonsConstants.ACTION_NULL)) {
-                        if (!mLongPressOnBackBehavior.equals(ButtonsConstants.ACTION_RECENTS)) {
-                            cancelPreloadRecentApps();
-                        }
                         performHapticFeedbackLw(null, HapticFeedbackConstants.LONG_PRESS, false);
-                        LiquidActions.processAction(mContext, mLongPressOnBackBehavior, false);
+                        processAction(mLongPressOnBackBehavior);
                         mBackConsumed = true;
                     }
                 }
@@ -3002,6 +2938,19 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         // Let the application handle the key.
         return 0;
+    }
+
+    private void processAction(String action) {
+        if (action == null) {
+            return;
+        }
+        if (!action.equals(ButtonsConstants.ACTION_RECENTS)) {
+            cancelPreloadRecentApps();
+        }
+        // Reset the check flag for preloading to give it free
+        // for next preload call.
+        mPreloadedRecentApps = false;
+        SlimActions.processAction(mContext, action, false);
     }
 
     /** {@inheritDoc} */
