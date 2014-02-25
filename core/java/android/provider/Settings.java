@@ -4091,13 +4091,6 @@ public final class Settings {
         public static final String STATUS_BAR_NETWORK_STATS_UPDATE_INTERVAL = "status_bar_network_stats_update_frequency";
 
         /**
-         * statusbar network stats text color
-         *
-         * @hide
-         */
-        public static final String STATUS_BAR_NETWORK_STATS_TEXT_COLOR = "status_bar_network_stats_text_color";
-
-        /**
          * Holds the text for the Carrier label. An empty string
          * will bring the default text back.
          * @hide
