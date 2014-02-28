@@ -3964,7 +3964,7 @@ public class PackageManagerService extends IPackageManager.Stub {
             for (PackageParser.Package pkg : pkgs) {
                 final PackageParser.Package p = pkg;
                 if (!isFirstBoot()) {
-                    i[0]++;
+                    i++;
                     try {
                         // give the packagename to the PhoneWindowManager
                         ApplicationInfo ai;
