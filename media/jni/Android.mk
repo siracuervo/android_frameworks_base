@@ -80,4 +80,5 @@ include $(BUILD_SHARED_LIBRARY)
 
 # build libsoundpool.so
 # build libaudioeffect_jni.so
+# build libscreenrecorder.so
 include $(call all-makefiles-under,$(LOCAL_PATH))
