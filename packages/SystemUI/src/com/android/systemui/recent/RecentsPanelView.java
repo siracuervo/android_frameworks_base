@@ -263,7 +263,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             }
 
-            holder.lockedIcon.setVisibility(td.isLocked() ? VISIBLE : INVISIBLE);
             holder.thumbnailView.setTag(td);
             holder.thumbnailView.setOnLongClickListener(new OnLongClickDelegate(convertView));
 		    holder.thumbnailView.setOnTouchListener(new OnTouchListener() {
@@ -997,11 +996,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
 	    final ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
 
-        if (viewHolder != null && viewHolder.taskDescription.isLocked() == true) {
-            MenuItem item = popup.getMenu().findItem(R.id.recent_lock_item);
-            item.setTitle(R.string.status_bar_recent_unlock_item_title);
-        }
-
         final ContentResolver cr = mContext.getContentResolver();
         if (Settings.Secure.getInt(cr,
             Settings.Secure.DEVELOPMENT_SHORTCUT, 0) == 0) {
@@ -1052,18 +1046,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                                 Context.ACTIVITY_SERVICE);
                         am.forceStopPackage(ad.packageName);
                         ((ViewGroup) mRecentsContainer).removeViewInLayout(selectedView);
-                    } else {
-                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
-                    }
-                } else if (item.getItemId() == R.id.recent_lock_item) {
-                    if (viewHolder != null) {
-                        if (viewHolder.taskDescription.isLocked()) {
-                            viewHolder.taskDescription.setLocked(false);
-                            viewHolder.lockedIcon.setVisibility(View.INVISIBLE);
-                        } else {
-                            viewHolder.taskDescription.setLocked(true);
-                            viewHolder.lockedIcon.setVisibility(View.VISIBLE);
-                        }
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
