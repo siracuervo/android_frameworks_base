@@ -2950,7 +2950,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         // Reset the check flag for preloading to give it free
         // for next preload call.
         mPreloadedRecentApps = false;
-        SlimActions.processAction(mContext, action, false);
+        LiquidActions.processAction(mContext, action, false);
     }
 
     /** {@inheritDoc} */
