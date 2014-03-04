@@ -2962,6 +2962,13 @@ public final class Settings {
         public static final String ALLOW_MULTIUSER = "allow_multiuser";
 
         /**
+         * Custom Recent Control
+         *
+         * @hide
+         */
+        public static final String CUSTOM_RECENT = "custom_recent";
+
+        /**
          * Whether to show the IME switcher in the status bar
          * @hide
          */
