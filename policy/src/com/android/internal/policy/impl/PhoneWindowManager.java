@@ -2618,6 +2618,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             if (virtualKey && down) {
                 mAppSwitchPressed = true;
                 mAppSwitchConsumed = false;
+                if (!mPreloadedRecentApps) {
+                    preloadRecentApps();
+                }
                 return -1;
             }
 
