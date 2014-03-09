@@ -3526,6 +3526,12 @@ public final class Settings {
         public static final String LOCKSCREEN_NOTIFICATIONS = "lockscreen_notifications";
 
         /**
+         * Alternative recent apps integration using Slim recents
+         * @hide
+         */
+        public static final String RECENTS_USE_SLIM = "recents_use_slim";
+
+        /**
          * Turn screen on when device is pulled out of pocket
          * @hide
          */

@@ -103,6 +103,7 @@ import com.android.internal.util.liquid.DeviceUtils;
 import com.android.systemui.liquid.lab.gestureanywhere.GestureAnywhereView;
 import com.android.systemui.R;
 import com.android.systemui.SearchPanelView;
+import com.android.systemui.RecentsComponent;
 import com.android.systemui.SystemUI;
 import com.android.systemui.slimrecent.RecentController;
 import com.android.systemui.statusbar.phone.KeyguardTouchDelegate;
@@ -232,16 +233,18 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     private boolean mDeviceProvisioned = false;
 
+    private RecentsComponent mRecents;
+    private RecentController mSlimRecents;
+
     private boolean mShowNotificationCounts;
 
     protected ActiveDisplayView mActiveDisplayView;
     @liquidLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
     protected GestureAnywhereView mGestureAnywhereView;
 
-    private RecentController mRecents;
-
     private boolean mOmniSwitchEnabled;
     private boolean mOmniSwitchStarted;
+    private boolean mSlimRecentsEnabled;
 
     public IStatusBarService getStatusBarService() {
         return mBarService;
@@ -263,6 +266,10 @@ public abstract class BaseStatusBar extends SystemUI implements
             mOmniSwitchEnabled = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.RECENTS_USE_OMNISWITCH,
                     0, UserHandle.USER_CURRENT) == 1;
+            mSlimRecentsEnabled = Settings.System.getIntForUser(
+                    mContext.getContentResolver(), Settings.System.RECENTS_USE_SLIM,
+                    0, UserHandle.USER_CURRENT) == 1;
+            update();
         }
     };
 
@@ -336,13 +343,23 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.getUriFor(Settings.System.RECENTS_USE_OMNISWITCH), true,
                 mSettingsObserver, UserHandle.USER_ALL);
 
+        mContext.getContentResolver().registerContentObserver(
+                Settings.System.getUriFor(Settings.System.RECENTS_USE_SLIM), true,
+                mSettingsObserver, UserHandle.USER_ALL);
+
         mBarService = IStatusBarService.Stub.asInterface(
                 ServiceManager.getService(Context.STATUS_BAR_SERVICE));
 
-        mRecents = new RecentController(mContext, mLayoutDirection);
-
+        mRecents = getComponent(RecentsComponent.class);
+		
         mLocale = mContext.getResources().getConfiguration().locale;
         mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
+
+        if (mSlimRecentsEnabled) {
+            mSlimRecents = new RecentController(mContext, mLayoutDirection);
+        } else {
+            mRecents = getComponent(RecentsComponent.class);
+        }
 
         mShowNotificationCounts = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIFICATION_COUNT, 0) == 1;
@@ -781,25 +798,37 @@ public abstract class BaseStatusBar extends SystemUI implements
             Intent showIntent = new Intent(OmniSwitchConstants.ACTION_TOGGLE_OVERLAY);
             mContext.sendBroadcast(showIntent);
         } else {
-            if (mRecents != null) {
-            mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView(),
-                    mExpandedDesktopStyle);
+            if (mRecents != null || mSlimRecents != null) {
+                if (mSlimRecentsEnabled) {
+                    mSlimRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
+                } else {
+                    mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView(),
+                            mExpandedDesktopStyle);
+                }
             }
         }
     }
 
     protected void preloadRecentTasksList() {
         if (!mOmniSwitchEnabled) {
-            if (mRecents != null) {
-                mRecents.preloadRecentTasksList();
+            if (mRecents != null || mSlimRecents != null) {
+                if (mSlimRecentsEnabled) {
+                    mSlimRecents.preloadRecentTasksList();
+                } else {
+                    mRecents.preloadRecentTasksList();
+                }
             }
         }
     }
 
     protected void cancelPreloadingRecentTasksList() {
         if (!mOmniSwitchEnabled) {
-            if (mRecents != null) {
-                mRecents.cancelPreloadingRecentTasksList();
+            if (mRecents != null || mSlimRecents != null) {
+                if (mSlimRecentsEnabled) {
+                    mSlimRecents.cancelPreloadingRecentTasksList();
+                } else {
+                    mRecents.cancelPreloadingRecentTasksList();
+                }
             }
         }
     }
@@ -809,15 +838,19 @@ public abstract class BaseStatusBar extends SystemUI implements
             Intent hideIntent = new Intent(OmniSwitchConstants.ACTION_HIDE_OVERLAY);
             mContext.sendBroadcast(hideIntent);
         } else {
-            if (mRecents != null) {
-                mRecents.closeRecents();
+            if (mRecents != null || mSlimRecents != null) {
+                if (mSlimRecentsEnabled) {
+                    mSlimRecents.closeRecents();
+                } else {
+                    mRecents.closeRecents();
+                }
             }
         }
     }
 
     protected void rebuildRecentsScreen() {
-        if (mRecents != null) {
-            mRecents.rebuildRecentsScreen();
+        if (mSlimRecents != null && mSlimRecentsEnabled) {
+            mSlimRecents.rebuildRecentsScreen();
         }
     }
 
