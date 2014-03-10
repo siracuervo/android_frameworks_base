@@ -1153,24 +1153,26 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateShowSearchHoldoff();
 
-        if (!mRecreating) {
-            if (mNavigationBarView == null) {
+        if (mNavigationBarView == null) {
                 mNavigationBarView =
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
-            }
-            removeSidebarView();
-
-            mNavigationBarView.setDisabledFlags(mDisabled);
-            mNavigationBarView.setBar(this);
-            addNavigationBarCallback(mNavigationBarView);
-            mNavigationBarView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    checkUserAutohide(v, event);
-                    return false;
-                }
-            });
         }
+
+        mNavigationBarView.setDisabledFlags(mDisabled);
+        mNavigationBarView.setBar(this);
+        addNavigationBarCallback(mNavigationBarView);
+        mNavigationBarView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                checkUserAutohide(v, event);
+                return false;
+            }
+        });
+
+        if (!mRecreating) {
+            removeSidebarView();
+        }
+        addSidebarView();
 
         if (mRecreating) {
         } else {
@@ -1179,8 +1181,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         // Setup pie container if enabled
         attachPieContainer(isPieEnabled());
-
-        addSidebarView();
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
