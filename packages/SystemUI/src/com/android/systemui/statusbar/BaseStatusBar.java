@@ -360,7 +360,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Settings.System.CUSTOM_RECENT, false);
 
         if(mCustomRecent){
-            cRecents = new RecentController(mContext mLayoutDirection);
+            cRecents = new RecentController(mContext, mLayoutDirection);
         }else{
             mRecents = getComponent(RecentsComponent.class);
         }
@@ -370,8 +370,6 @@ public abstract class BaseStatusBar extends SystemUI implements
 
         mShowNotificationCounts = Settings.System.getInt(mContext.getContentResolver(),
                 Settings.System.STATUS_BAR_NOTIFICATION_COUNT, 0) == 1;
-        mLocale = mContext.getResources().getConfiguration().locale;
-        mLayoutDirection = TextUtils.getLayoutDirectionFromLocale(mLocale);
 
         mStatusBarContainer = new FrameLayout(mContext);
 
