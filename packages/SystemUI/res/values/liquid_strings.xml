@@ -132,6 +132,7 @@
     <string name="quick_settings_reminder_dismiss_message">Clear current reminder?</string>
     <string name="quick_settings_reminder_help_title">Touch</string>
     <string name="quick_settings_reminder_noti_dismiss">Dismiss</string>
+    <string name="quick_settings_reminder_noti_later">Update Time</string>
     <string name="quick_settings_reminder_help_message">Touch the empty space above to set or change the reminder. Long-press to clear the current reminder.</string>
 
     <!-- Battery status in pie controls -->
@@ -159,10 +160,6 @@
 
     <!-- Hide notification icons -->
     <string name="status_bar_notification_hide_icon_packages">Hide app\'s notification icon(s)</string>
-
-    <!-- Slim recents -->
-    <string name="status_bar_recent_playstore_item_title">Play Store</string>
-    <string name="status_bar_recent_amazon_item_title">Amazon Store</string>
 
     <!-- Smart PullDown Warning -->
     <string name="smart_pulldown_disabled">Smart pulldown is disabled</string>
