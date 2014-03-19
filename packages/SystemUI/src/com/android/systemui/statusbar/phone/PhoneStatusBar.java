@@ -53,7 +53,7 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.BitmapDrawable;
@@ -390,9 +390,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private BatteryMeterView mBattery;
     private BatteryCircleMeterView mCircleBattery;
 
-    private boolean mCustomColor;
-    private int systemColor;
-
     // XXX: gesture research
     private final GestureRecorder mGestureRec = DEBUG_GESTURES
         ? new GestureRecorder("/sdcard/statusbar_gestures.dat")
@@ -478,10 +475,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.LOCKSCREEN_USE_WIDGET_CONTAINER_CAROUSEL),
                     false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR), false, this, UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.SYSTEM_ICON_COLOR), false, this, UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.NOTIFICATION_BACKGROUND),
                     false, this, UserHandle.USER_ALL);
@@ -728,11 +721,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 }
                 updateCarrierAndWifiLabelVisibility(false);
             }
-
-            mCustomColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.CUSTOM_SYSTEM_ICON_COLOR, 0, UserHandle.USER_CURRENT) == 1;
-            systemColor = Settings.System.getIntForUser(resolver,
-                    Settings.System.SYSTEM_ICON_COLOR, -2, UserHandle.USER_CURRENT);
 
             updateBatteryIcons();
 
@@ -1873,14 +1861,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     public void addIcon(String slot, int index, int viewIndex, StatusBarIcon icon) {
         if (SPEW) Log.d(TAG, "addIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " icon=" + icon);
-
-        Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (mCustomColor) {
-            iconDrawable.setColorFilter(systemColor, Mode.SRC_ATOP);
-        } else {
-            iconDrawable.clearColorFilter();
-        }
-
         StatusBarIconView view = new StatusBarIconView(mContext, slot, null);
         view.set(icon);
         mStatusIcons.addView(view, viewIndex, new LinearLayout.LayoutParams(mIconSize, mIconSize));
@@ -1890,14 +1870,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             StatusBarIcon old, StatusBarIcon icon) {
         if (SPEW) Log.d(TAG, "updateIcon slot=" + slot + " index=" + index + " viewIndex=" + viewIndex
                 + " old=" + old + " icon=" + icon);
-
-        Drawable iconDrawable = StatusBarIconView.getIcon(mContext, icon);
-        if (mCustomColor) {
-            iconDrawable.setColorFilter(systemColor, Mode.SRC_ATOP);
-        } else {
-            iconDrawable.clearColorFilter();
-        }
-
         StatusBarIconView view = (StatusBarIconView)mStatusIcons.getChildAt(viewIndex);
         view.set(icon);
     }
@@ -4372,7 +4344,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         @Override
         public void draw(Canvas canvas) {
-            canvas.drawColor(mColor, Mode.SRC);
+            canvas.drawColor(mColor, PorterDuff.Mode.SRC);
         }
 
         @Override
