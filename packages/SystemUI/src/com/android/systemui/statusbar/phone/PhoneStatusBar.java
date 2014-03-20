@@ -1502,7 +1502,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
         addText((TextView) mStatusBarView.findViewById(R.id.center_clock));
         addText((TextView) mStatusBarView.findViewById(R.id.clock));
-		addText((TextView) mStatusBarView.findViewById(R.id.traffic));
 
         mKeyguardManager = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
         PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);

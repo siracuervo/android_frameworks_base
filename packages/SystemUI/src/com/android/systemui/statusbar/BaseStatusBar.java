@@ -264,7 +264,6 @@ public abstract class BaseStatusBar extends SystemUI implements
             mSlimRecentsEnabled = Settings.System.getIntForUser(
                     mContext.getContentResolver(), Settings.System.RECENTS_USE_SLIM,
                     0, UserHandle.USER_CURRENT) == 1;
-            update();
         }
     };
 
