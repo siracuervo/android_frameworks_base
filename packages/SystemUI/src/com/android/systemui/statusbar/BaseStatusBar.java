@@ -30,8 +30,6 @@ import com.android.systemui.recent.RecentsActivity;
 import com.android.systemui.recent.TaskDescription;
 import com.android.systemui.statusbar.policy.NotificationRowLayout;
 import com.android.systemui.statusbar.policy.activedisplay.ActiveDisplayView;
-import android.annotation.liquidLab;
-import android.annotation.liquidLab.Classification;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -100,7 +98,6 @@ import com.android.internal.statusbar.StatusBarIconList;
 import com.android.internal.util.liquid.OmniSwitchConstants;
 import com.android.internal.widget.SizeAdaptiveLayout;
 import com.android.internal.util.liquid.DeviceUtils;
-import com.android.systemui.liquid.lab.gestureanywhere.GestureAnywhereView;
 import com.android.systemui.R;
 import com.android.systemui.SearchPanelView;
 import com.android.systemui.RecentsComponent;
@@ -239,8 +236,6 @@ public abstract class BaseStatusBar extends SystemUI implements
     private boolean mShowNotificationCounts;
 
     protected ActiveDisplayView mActiveDisplayView;
-    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_FIELD)
-    protected GestureAnywhereView mGestureAnywhereView;
 
     private boolean mOmniSwitchEnabled;
     private boolean mOmniSwitchStarted;
@@ -322,7 +317,8 @@ public abstract class BaseStatusBar extends SystemUI implements
                 Log.v(TAG, "OmniSwitch service stoped");
                 mOmniSwitchStarted = false;
             }
-        }
+          }
+	   }
     };
 
     public void start() {
@@ -802,8 +798,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                 if (mSlimRecentsEnabled) {
                     mSlimRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
                 } else {
-                    mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView(),
-                            mExpandedDesktopStyle);
+                    mRecents.toggleRecents(mDisplay, mLayoutDirection, getStatusBarView());
                 }
             }
         }
@@ -1649,40 +1644,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
         lp.gravity = Gravity.BOTTOM | Gravity.START;
         lp.setTitle("ActiveDisplayView");
-
-        return lp;
-    }
-
-    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
-    protected void addGestureAnywhereView() {
-        mGestureAnywhereView = (GestureAnywhereView)View.inflate(
-                mContext, R.layout.gesture_anywhere_overlay, null);
-        mWindowManager.addView(mGestureAnywhereView, getGestureAnywhereViewLayoutParams(Gravity.LEFT));
-        mGestureAnywhereView.setStatusBar(this);
-    }
-
-    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
-    protected void removeGestureAnywhereView() {
-        if (mGestureAnywhereView != null)
-            mWindowManager.removeView(mGestureAnywhereView);
-    }
-
-    @liquidLab(name="GestureAnywhere", classification=Classification.NEW_METHOD)
-    protected WindowManager.LayoutParams getGestureAnywhereViewLayoutParams(int gravity) {
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
-                LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                WindowManager.LayoutParams.TYPE_STATUS_BAR_SUB_PANEL,
-                0
-                | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING
-                | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-                | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
-                | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-        lp.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_NO_MOVE_ANIMATION;
-        lp.gravity = Gravity.TOP | gravity;
-        lp.setTitle("GestureAnywhereView");
 
         return lp;
     }
