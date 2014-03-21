@@ -1049,9 +1049,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     } else {
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
-                    } else {
-                        throw new IllegalStateException("Oops, no tag on view " + selectedView);
-                    }
                 } else if (item.getItemId() == R.id.recent_wipe_app) {
                     ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
                     if (viewHolder != null) {
