@@ -29,8 +29,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
-import android.annotation.liquidLab;
-import android.annotation.liquidLab.Classification;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.KeyguardManager;
@@ -776,8 +774,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
     }
 
-    @liquidLab(name="GestureAnywhere", classification=Classification.CHANGE_CODE)
-
     private boolean isPieEnabled() {
         return Settings.System.getIntForUser(mContext.getContentResolver(),
                 Settings.System.PIE_CONTROLS, 0,
@@ -1174,10 +1170,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                 mNavigationBarView =
                     (NavigationBarView) View.inflate(context, R.layout.navigation_bar, null);
             }
-
-            /* liquidLab: GestureAnywhere - BEGIN */
-            addGestureAnywhereView();
-            /* liquidLab: GestureAnywhere - END */
 
             mNavigationBarView.setDisabledFlags(mDisabled);
             mNavigationBarView.setBar(this);
