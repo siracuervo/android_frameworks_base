@@ -4497,6 +4497,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             ((DemoMode)v).dispatchDemoCommand(command, args);
         }
     }
+<<<<<<< HEAD
 
     private void setNotificationAlpha() {
         if (mPile == null || mNotificationData == null) {
@@ -4548,7 +4549,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 				mCurrentColor = mWhiteColor;
 				refresh();
 			}
-			mMustChange = false;
 		}
 	}
 
@@ -4566,16 +4566,13 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 				mStatusBarView.setBackgroundColor(Color.TRANSPARENT);
 			}
 			int mSysColor = getSysColor();
-  			if (mSysColor == mStatusBarColor) {
-  			    if(!mMustChange) {
-  			        updateBackgroundDelayed();
-  			        return;
-  		        }
+			transform(isGray(mSysColor));		
+			if (mSysColor == mStatusBarColor) {
+				updateBackgroundDelayed();
+				return;
 			} else {
 				mStatusBarColor = mSysColor;
 			}
-			mBattery.mChameleonBoltColor = mStatusBarColor;
-			mBattery.updateBattery();
 			if (mTransparent) {
 				mStatusBarView.setBackgroundColor(Color.TRANSPARENT);
 				updateBackgroundDelayed();
@@ -4691,7 +4688,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
 		for (TextView tv : mTexts) {
 			if (tv != null) {
-				tv.mTransColor = false;
 				tv.setTextColor(mCurrentColor);
 			} else {
 				mTexts.remove(tv);
@@ -4699,7 +4695,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 		}
 		mCircleBattery.setCircleColor(mCurrentColor);
 		mBattery.mChameleonBatteryColor = mCurrentColor;
-		mBattery.updateSettings();
+		mBattery.mChameleonBoltColor = isGray(mCurrentColor) ? Color.BLACK : Color.WHITE;
+		mBattery.updateBattery();
+		mBattery.invalidate();
 	}
 
 	private void updateBackgroundDelayed() {
